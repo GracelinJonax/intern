@@ -1,0 +1,17 @@
+spring:
+  data:
+    mongodb:
+      database: bill
+      port: 27017
+      host: localhost
+      uri: mongodb://localhost:27017/bill
+  application:
+    name: bill
+server:
+  port: 8081
+
+logging:
+  level:
+    com:
+      zaxxer:
+        hikari: DEBUG
