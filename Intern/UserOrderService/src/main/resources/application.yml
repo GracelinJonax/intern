@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: order
+  datasource:
+    url: jdbc:sqlserver://127.0.0.1:1433;databaseName=Bill;encrypt=true;trustServerCertificate=true
+    username: sa
+    password: sa
+  jpa:
+    hibernate:
+      ddl-auto: update
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: gracelinjonax247@gmail.com
+    password: kodo qaqr dsde hrgf
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+#    protocol:
+#      proxy:
+#        host: http://rbins-ap.bosch.com/ban.pac
+#        port: 80
+#        user: UCN1BAN
+#        password: WelcomeBosch./@123
+logging:
+  level:
+    com:
+      zaxxer:
+        hikari: DEBUG
+##http:
+##  proxyHost: http://rbins-ap.bosch.com/ban.pac
+##  nonProxyHosts: smtp.gmail.com
+#-Dhttp:
+#  proxyHost: http://rbins-ap.bosch.com/ban.pac
+#  proxyPort: 8080

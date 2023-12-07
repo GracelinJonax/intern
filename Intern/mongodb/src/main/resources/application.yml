@@ -1,0 +1,10 @@
+spring:
+  data:
+    mongodb:
+      database: new
+      port: 27017
+      host: localhost
+      url: mongodb://localhost:27017/new
+    redis:
+      host: localhost
+      port: 6379
