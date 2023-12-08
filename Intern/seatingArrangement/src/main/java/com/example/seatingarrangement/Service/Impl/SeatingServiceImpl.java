@@ -1,7 +1,8 @@
-package com.example.seatingarrangement.Service;
+package com.example.seatingarrangement.Service.Impl;
 
 import com.example.seatingarrangement.Dto.SeatingDto;
 import com.example.seatingarrangement.Dto.TeamDto;
+import com.example.seatingarrangement.Service.SeatingService;
 import com.example.seatingarrangement.model.DefaultLayout;
 import com.example.seatingarrangement.model.Team;
 import com.example.seatingarrangement.repository.DefaultLayoutRepository;
