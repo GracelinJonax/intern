@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import static org.hibernate.query.sqm.tree.SqmNode.log;
+
 @Service
 public class SeatingServiceImpl implements SeatingService {
     static TreeSet<Integer> clusters = new TreeSet<>();
@@ -41,6 +43,13 @@ public class SeatingServiceImpl implements SeatingService {
 
     @Override
     public DefaultLayout saveLayoutService(DefaultLayout defaultLayout) {
+        int count=0;
+        for(int i=0;i<defaultLayout.getDefaultLayout().length;i++){
+            for(int j=0;j<defaultLayout.getDefaultLayout()[0].length;j++)
+                if(defaultLayout.getDefaultLayout()[i][j]==1)
+                    count++;
+        }
+        defaultLayout.setTotalSpace(count);
         defaultLayout.setLayout(
                 new String[defaultLayout.getDefaultLayout().length][defaultLayout.getDefaultLayout()[0].length]);
         return defaultLayoutRepository.save(defaultLayout);
@@ -48,8 +57,15 @@ public class SeatingServiceImpl implements SeatingService {
 
     @Override
     public SeatingDto createLayoutService(List<TeamDto> teamDtoList) {
+        int wantedSpace=0;
+        for(TeamDto teamDto:teamDtoList)
+            wantedSpace+=teamDto.getTotalMembers();
+        int totalSpace=defaultLayoutRepository.findAll().get(0).getTotalSpace();
+        if(wantedSpace>totalSpace){
+            System.out.println("no space");
+        return new SeatingDto();}
         List<Team> teamList = teamRepository.findAll();
-        ;
+
         int total = (int) teamRepository.count();
         for (TeamDto teamDto : teamDtoList) {
             Team team = new Team();
@@ -60,7 +76,7 @@ public class SeatingServiceImpl implements SeatingService {
             teamList.add(team);
         }
         teamList.sort(Comparator.comparing(Team::getTotalMembers).reversed());
-        DefaultLayout defaultLayoutClass = defaultLayoutRepository.findById("65700fb35f74747bf9564012").get();
+        DefaultLayout defaultLayoutClass = defaultLayoutRepository.findAll().get(0);
         int defaultLayout[][] = defaultLayoutClass.getDefaultLayout();
         arrangement = new String[defaultLayout.length][defaultLayout[0].length];
         findArrangement(teamList);
@@ -71,17 +87,25 @@ public class SeatingServiceImpl implements SeatingService {
         seatingDto.setArrangement(arrangement);
         defaultLayoutClass.setLayout(arrangement);
         defaultLayoutRepository.save(defaultLayoutClass);
+//        for(int i=0;i<d)
         for (int i = 0; i < arrangement.length; i++) {
             for (int j = 0; j < arrangement[0].length; j++)
                 System.out.print(arrangement[i][j] + " ");
             System.out.println();
         }
+        defaultLayoutClass.setTotalSpace(totalSpace-wantedSpace);
+        defaultLayoutRepository.save(defaultLayoutClass);
         return seatingDto;
     }
     private void findArrangement(List<Team> teamList) {
-        tempLayout = defaultLayoutRepository.findById("65700fb35f74747bf9564012").get().getDefaultLayout();
+        tempLayout = defaultLayoutRepository.findAll().get(0).getDefaultLayout();
         track = new boolean[tempLayout.length][tempLayout[0].length];
         totalSeating = findTotalSeating(tempLayout);
+        for(int i=0;i<totalSeating.length;i++){
+            for(int j=0;j<totalSeating[0].length;j++)
+                System.out.print(totalSeating[i][j]);
+            System.out.println();
+        }
         for (Team team : teamList) {
             lastx = -1;
             lasty = -1;
@@ -123,7 +147,8 @@ public class SeatingServiceImpl implements SeatingService {
         for (int i = 1; i <= tempLayout.length; i++) {
             int c = 0;
             minSteps=100;
-            for (int j = 1; j <= tempLayout[0].length; j++) {if (totalSeating[i][j] <= total && totalSeating[i][j] != 0) {
+            for (int j = 1; j <= tempLayout[0].length; j++) {
+                if (totalSeating[i][j] <= total && totalSeating[i][j] != 0) {
                     if (lasty == -1 && lastx == -1 && totalSeating[i][j] == total) {
                         c = 1;
                         wantedx = i;
@@ -159,6 +184,7 @@ public class SeatingServiceImpl implements SeatingService {
     }
 
     boolean findSteps(int x, int y, int resultx, int resulty, int steps, String teamCode) {
+//        log.
         if (x == resultx && y == resulty) {
             steps+=1;
             if (steps < minSteps)
@@ -217,10 +243,14 @@ public class SeatingServiceImpl implements SeatingService {
             for (int j = 1; j <= tempLayout[0].length; j++) {
                 if (tempLayout[i - 1][j - 1] == 0)
                     totalSeating[i][j] = 0;
+                else if (totalSeating[i][j-1]==0||totalSeating[i-1][j]==0)
+                    totalSeating[i][j]=totalSeating[i][j-1]+totalSeating[i-1][j]+tempLayout[i-1][j-1];
                 else
                     totalSeating[i][j] = totalSeating[i][j - 1] + totalSeating[i - 1][j] - totalSeating[i - 1][j - 1] + tempLayout[i - 1][j - 1];
                 clusters.add(totalSeating[i][j]);
+//                System.out.print(totalSeating[i][j]+" ");
             }
+//            System.out.println();
         }
         return totalSeating;
     }

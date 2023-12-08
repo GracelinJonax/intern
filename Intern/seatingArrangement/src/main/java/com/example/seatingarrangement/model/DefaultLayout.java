@@ -19,6 +19,7 @@ public class DefaultLayout {
     private String id;
     private int[][] defaultLayout;
     private String[][] layout;
+    private int totalSpace;
     @CreatedDate
     private Date createdDated;
     @LastModifiedDate
