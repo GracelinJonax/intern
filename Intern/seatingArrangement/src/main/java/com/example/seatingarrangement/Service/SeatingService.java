@@ -12,4 +12,6 @@ public interface SeatingService {
     DefaultLayout saveLayoutService(DefaultLayout defaultLayout);
 
     SeatingDto createLayoutService(List<TeamDto> teamDtoList);
+
+    int[][] getLayoutService();
 }

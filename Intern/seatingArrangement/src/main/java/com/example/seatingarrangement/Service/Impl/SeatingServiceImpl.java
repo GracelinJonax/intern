@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
@@ -42,16 +43,23 @@ public class SeatingServiceImpl implements SeatingService {
     }
 
     @Override
+    public int[][] getLayoutService() {
+        return defaultLayoutRepository.findAll().get(0).getDefaultLayout();
+    }
+
+    @Override
     public DefaultLayout saveLayoutService(DefaultLayout defaultLayout) {
         int count=0;
+        String layout[][]=new String[defaultLayout.getDefaultLayout().length][defaultLayout.getDefaultLayout()[0].length];
         for(int i=0;i<defaultLayout.getDefaultLayout().length;i++){
-            for(int j=0;j<defaultLayout.getDefaultLayout()[0].length;j++)
+            for(int j=0;j<defaultLayout.getDefaultLayout()[0].length;j++){
+//                layout[i][j]="";
                 if(defaultLayout.getDefaultLayout()[i][j]==1)
                     count++;
-        }
+        }}
+        Arrays.stream(layout).forEach(a->Arrays.fill(a,""));
         defaultLayout.setTotalSpace(count);
-        defaultLayout.setLayout(
-                new String[defaultLayout.getDefaultLayout().length][defaultLayout.getDefaultLayout()[0].length]);
+        defaultLayout.setLayout(layout);
         return defaultLayoutRepository.save(defaultLayout);
     }
 
@@ -103,7 +111,7 @@ public class SeatingServiceImpl implements SeatingService {
         totalSeating = findTotalSeating(tempLayout);
         for(int i=0;i<totalSeating.length;i++){
             for(int j=0;j<totalSeating[0].length;j++)
-                System.out.print(totalSeating[i][j]);
+                System.out.print(totalSeating[i][j]+" ");
             System.out.println();
         }
         for (Team team : teamList) {
@@ -118,7 +126,9 @@ public class SeatingServiceImpl implements SeatingService {
                 if (total > max) {
                     findStartSeating(max, team.getTeamCode());
                     total = totalMembers - count;
-                } else {
+                }
+                else
+                {
                     findStartSeating(total, team.getTeamCode());
                     total = totalMembers - count;
                 }
@@ -138,15 +148,15 @@ public class SeatingServiceImpl implements SeatingService {
         int total = totalMembers;
         if (!clusters.contains(totalMembers)) {
             for (Integer check : clusters) {
-                if (check > totalMembers) {
+                if (check < totalMembers) {
                     total = check;
-                    break;
                 }
+                else
+                    break;
             }
         }
         for (int i = 1; i <= tempLayout.length; i++) {
             int c = 0;
-            minSteps=100;
             for (int j = 1; j <= tempLayout[0].length; j++) {
                 if (totalSeating[i][j] <= total && totalSeating[i][j] != 0) {
                     if (lasty == -1 && lastx == -1 && totalSeating[i][j] == total) {
@@ -170,10 +180,13 @@ public class SeatingServiceImpl implements SeatingService {
 
         lastx = wantedx;
         lasty = wantedy;
-        markSeating(wantedx, wantedy, teamCode, totalSeating[wantedx][wantedy] + count);totalSeating = findTotalSeating(tempLayout);
+        if(totalMembers>totalSeating[wantedx][wantedy])
+            totalMembers=totalSeating[wantedx][wantedy];
+        markSeating(wantedx, wantedy, teamCode, totalMembers + count);totalSeating = findTotalSeating(tempLayout);
     }
 
     int findDistance(int x, int y, String teamCode) {
+        minSteps=100;
         trace=new int[arrangement.length][arrangement[0].length];
         findSteps(lastx, lasty, x, y, 0, teamCode);
 //        int finalx = Math.abs((lastx - x)) * Math.abs((lastx - x));
@@ -198,20 +211,25 @@ public class SeatingServiceImpl implements SeatingService {
             return false;
         if (x > 0 && y > 0 && x <= arrangement.length && y <= arrangement[0].length&&trace[x-1][y-1]==0) {
             trace[x-1][y-1]=1;
-            if ((track[x - 1][y - 1] == true && !arrangement[x - 1][y - 1].contains(
-                    teamCode)) || (track[x - 1][y - 1] == false && totalSeating[x][y] != 0))
-                steps += 1;
-            if (findSteps(x, y+1, resultx, resulty, steps, teamCode))
+            if ((track[x - 1][y - 1] == true &&arrangement[x - 1][y - 1].contains(
+                    teamCode)) || (track[x - 1][y - 1] == false && totalSeating[x][y] == 0))
+                steps -= 1;
+            if (findSteps(x, y-1, resultx, resulty, steps+1, teamCode))
                 return true;
-            if (findSteps(x+1 , y, resultx, resulty, steps, teamCode))
+            if (findSteps(x-1, y, resultx, resulty, steps+1, teamCode))
                 return true;
-            if (findSteps(x, y-1 , resultx, resulty, steps, teamCode))
+            if (findSteps(x , y+1, resultx, resulty, steps+1, teamCode))
                 return true;
-            if (findSteps(x-1, y, resultx, resulty, steps, teamCode))
+            if (findSteps(x+1, y , resultx, resulty, steps+1, teamCode))
                 return true;
+
 //            trace[x-1][y-1]=0;
+//            if ((track[x - 1][y - 1] == true && !arrangement[x - 1][y - 1].contains(
+//                    teamCode)) || (track[x - 1][y - 1] == false && totalSeating[x][y] != 0))
+//                steps-=1;
             return false;
         }
+//        steps -= 1;
         return false;
     }
 

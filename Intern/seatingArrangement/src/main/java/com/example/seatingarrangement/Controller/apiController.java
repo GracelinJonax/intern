@@ -28,4 +28,9 @@ public class apiController implements seatingArrangementApi {
     public ResponseEntity<SeatingDto> createLayout(List<TeamDto> teamDtoList) {
        return new ResponseEntity<>(seatingService.createLayoutService(teamDtoList),HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<int[][]> getLayout() {
+        return new ResponseEntity<>(seatingService.getLayoutService(),HttpStatus.OK);
+    }
 }
