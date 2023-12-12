@@ -73,8 +73,9 @@ public class SeatingServiceImpl implements SeatingService {
         if(wantedSpace>totalSpace){
             System.out.println("no space");
         return new SeatingDto();}
-        List<Team> teamList =teamRepository.findAll();
-        int total = (int) teamRepository.count();
+        teamRepository.deleteAll();
+        List<Team> teamList =new ArrayList<>();
+        int total = 0;
         for (TeamDto.Team teams : teamDto.getTeamList()) {
             Team team = new Team();
             modelMapper.map(teams, team);
