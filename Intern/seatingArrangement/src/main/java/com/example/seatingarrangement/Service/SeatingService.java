@@ -11,7 +11,7 @@ import java.util.List;
 public interface SeatingService {
     DefaultLayout saveLayoutService(DefaultLayout defaultLayout);
 
-    SeatingDto createLayoutService(List<TeamDto> teamDtoList);
+    SeatingDto createLayoutService(TeamDto teamDtoList);
 
     int[][] getLayoutService();
 }

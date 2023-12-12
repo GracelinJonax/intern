@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -64,26 +65,32 @@ public class SeatingServiceImpl implements SeatingService {
     }
 
     @Override
-    public SeatingDto createLayoutService(List<TeamDto> teamDtoList) {
+    public SeatingDto createLayoutService(TeamDto teamDto) {
         int wantedSpace=0;
-        for(TeamDto teamDto:teamDtoList)
-            wantedSpace+=teamDto.getTotalMembers();
+        for(TeamDto.Team teamList:teamDto.getTeamList())
+            wantedSpace+=teamList.getTotalMembers();
         int totalSpace=defaultLayoutRepository.findAll().get(0).getTotalSpace();
         if(wantedSpace>totalSpace){
             System.out.println("no space");
         return new SeatingDto();}
-        List<Team> teamList = teamRepository.findAll();
-
+        List<Team> teamList =teamRepository.findAll();
         int total = (int) teamRepository.count();
-        for (TeamDto teamDto : teamDtoList) {
+        for (TeamDto.Team teams : teamDto.getTeamList()) {
             Team team = new Team();
-            modelMapper.map(teamDto, team);
+            modelMapper.map(teams, team);
             String teamCode = createTeamCode(++total);
             team.setTeamCode(teamCode);
             teamRepository.save(team);
             teamList.add(team);
         }
-        teamList.sort(Comparator.comparing(Team::getTotalMembers).reversed());
+//        System.out.println(teamList);
+    if(teamDto.isSort())
+    teamList.sort(Comparator.comparing(Team::getTotalMembers).reversed());
+    else
+        teamList=new HashSet<>(teamList).stream().toList();
+//        System.out.println(teamList);
+//    teamList=new HashSet<>(teamList).stream().toList();
+//        System.out.println(teamList);
         DefaultLayout defaultLayoutClass = defaultLayoutRepository.findAll().get(0);
         int defaultLayout[][] = defaultLayoutClass.getDefaultLayout();
         arrangement = new String[defaultLayout.length][defaultLayout[0].length];
@@ -101,7 +108,7 @@ public class SeatingServiceImpl implements SeatingService {
                 System.out.print(arrangement[i][j] + " ");
             System.out.println();
         }
-        defaultLayoutClass.setTotalSpace(totalSpace-wantedSpace);
+//        defaultLayoutClass.setTotalSpace(totalSpace-wantedSpace);
         defaultLayoutRepository.save(defaultLayoutClass);
         return seatingDto;
     }

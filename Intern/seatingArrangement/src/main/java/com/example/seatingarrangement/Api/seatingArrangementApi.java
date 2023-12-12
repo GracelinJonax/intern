@@ -16,7 +16,7 @@ public interface seatingArrangementApi {
     @PostMapping("/defaultLayout")
     ResponseEntity<DefaultLayout> saveLayout(@RequestBody DefaultLayout layout);
     @PostMapping("/team")
-    ResponseEntity<SeatingDto> createLayout(@RequestBody List<TeamDto> teamDtoList);
+    ResponseEntity<SeatingDto> createLayout(@RequestBody TeamDto teamDtoList);
     @GetMapping("getDefaultLayout")
     ResponseEntity<int [][]> getLayout();
 }
