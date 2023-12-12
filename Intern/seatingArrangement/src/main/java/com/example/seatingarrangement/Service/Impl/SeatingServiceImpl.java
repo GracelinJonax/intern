@@ -214,14 +214,20 @@ public class SeatingServiceImpl implements SeatingService {
             if ((track[x - 1][y - 1] == true &&arrangement[x - 1][y - 1].contains(
                     teamCode)) || (track[x - 1][y - 1] == false && totalSeating[x][y] == 0))
                 steps -= 1;
-            if (findSteps(x, y-1, resultx, resulty, steps+1, teamCode))
+            if(tempLayout[x-1][y-1]==-1)
+                steps+=2;
+
+            if (findSteps(x , y+1, resultx, resulty, steps+1, teamCode))
                 return true;
             if (findSteps(x-1, y, resultx, resulty, steps+1, teamCode))
                 return true;
-            if (findSteps(x , y+1, resultx, resulty, steps+1, teamCode))
-                return true;
             if (findSteps(x+1, y , resultx, resulty, steps+1, teamCode))
                 return true;
+            if (findSteps(x, y-1, resultx, resulty, steps+1, teamCode))
+                return true;
+
+
+
 
 //            trace[x-1][y-1]=0;
 //            if ((track[x - 1][y - 1] == true && !arrangement[x - 1][y - 1].contains(
@@ -259,7 +265,7 @@ public class SeatingServiceImpl implements SeatingService {
         int totalSeating[][] = new int[tempLayout.length + 1][tempLayout[0].length + 1];
         for (int i = 1; i <= tempLayout.length; i++) {
             for (int j = 1; j <= tempLayout[0].length; j++) {
-                if (tempLayout[i - 1][j - 1] == 0)
+                if (tempLayout[i - 1][j - 1] == 0||tempLayout[i-1][j-1]==-1)
                     totalSeating[i][j] = 0;
                 else if (totalSeating[i][j-1]==0||totalSeating[i-1][j]==0)
                     totalSeating[i][j]=totalSeating[i][j-1]+totalSeating[i-1][j]+tempLayout[i-1][j-1];
