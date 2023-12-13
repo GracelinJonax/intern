@@ -85,8 +85,10 @@ public class SeatingServiceImpl implements SeatingService {
             teamList.add(team);
         }
 //        System.out.println(teamList);
-    if(teamDto.isSort())
+    if(teamDto.getPreference()==1)
     teamList.sort(Comparator.comparing(Team::getTotalMembers).reversed());
+    else if(teamDto.getPreference()==2)
+        teamList.sort(Comparator.comparing(Team::getTotalMembers));
     else
         teamList=new HashSet<>(teamList).stream().toList();
 //        System.out.println(teamList);
@@ -233,6 +235,8 @@ public class SeatingServiceImpl implements SeatingService {
                 return true;
             if (findSteps(x, y-1, resultx, resulty, steps+1, teamCode))
                 return true;
+
+
 
 
 

@@ -8,7 +8,7 @@ import java.util.List;
 public class TeamDto {
 
     private List<Team> teamList;
-    private boolean sort;
+    private int preference;
     @Data
     public static class Team{
     private String teamName;
