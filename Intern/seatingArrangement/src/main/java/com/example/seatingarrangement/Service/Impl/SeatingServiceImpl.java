@@ -176,7 +176,7 @@ public class SeatingServiceImpl implements SeatingService {
                         break;
                     } else if (lasty != -1 && lastx != -1) {
                         int calculatedDis = findDistance(i, j, teamCode);
-                        if (calculatedDis < minDis || (calculatedDis == minDis && (totalSeating[i][j] == total||totalSeating[wantedx][wantedy]<totalSeating[i][j]))) {
+                        if (calculatedDis < minDis || (calculatedDis == minDis && ((totalSeating[i][j] == total)||totalSeating[wantedx][wantedy]<totalSeating[i][j]))) {
                             wantedx = i;
                             wantedy = j;
                             minDis = calculatedDis;
@@ -226,7 +226,6 @@ public class SeatingServiceImpl implements SeatingService {
                 steps -= 1;
             if(tempLayout[x-1][y-1]==-1)
                 steps+=2;
-
             if (findSteps(x , y+1, resultx, resulty, steps+1, teamCode))
                 return true;
             if (findSteps(x-1, y, resultx, resulty, steps+1, teamCode))
@@ -235,6 +234,25 @@ public class SeatingServiceImpl implements SeatingService {
                 return true;
             if (findSteps(x, y-1, resultx, resulty, steps+1, teamCode))
                 return true;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//            if (findSteps(x, y-1, resultx, resulty, steps+1, teamCode))
+//                return true;
 
 
 
@@ -267,6 +285,7 @@ public class SeatingServiceImpl implements SeatingService {
                 return true;
             if (markSeating(x + 1, y, teamCode, totalMembers) == true)
                 return true;
+            track[x-1][y-1]=false;
             return false;
         }
         return false;
