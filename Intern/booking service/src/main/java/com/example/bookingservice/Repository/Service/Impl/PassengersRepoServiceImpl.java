@@ -25,4 +25,9 @@ public class PassengersRepoServiceImpl implements PassengersRepoService {
     public List<Passengers> findBySeatStatus(String seatStatus) {
         return passengersRepository.findBySeatStatus(seatStatus);
     }
+
+    @Override
+    public List<Passengers> findByBookingDetails(BookingDetails booking) {
+        return passengersRepository.findByBookingDetails(booking);
+    }
 }

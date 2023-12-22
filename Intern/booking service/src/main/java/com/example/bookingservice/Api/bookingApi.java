@@ -4,10 +4,7 @@ import com.example.bookingservice.Dto.*;
 import com.example.bookingservice.Model.BusDetails;
 import com.example.bookingservice.Model.UserDetails;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 @RestController
@@ -29,5 +26,8 @@ public interface bookingApi {
     ResponseEntity<String> blockSeat(@RequestBody BlockDto blockDto);
     @PostMapping("/makePayment")
     ResponseEntity<TicketDto> makePayment(@RequestBody PaymentDto payment);
+
+    @PostMapping("/cancel")
+    ResponseEntity<String> cancelBooking(@RequestBody CancelDto cancelDto);
 
 }

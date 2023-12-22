@@ -21,4 +21,6 @@ public interface bookingService {
     String saveUserService(UserDetails userDetails);
 
     TicketDto makePayment(PaymentDto payment);
+
+    String cancelBookingSerice(CancelDto cancelDto);
 }

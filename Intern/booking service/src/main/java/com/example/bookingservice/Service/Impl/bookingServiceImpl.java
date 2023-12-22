@@ -3,10 +3,7 @@ package com.example.bookingservice.Service.Impl;
 import com.example.bookingservice.Dto.*;
 import com.example.bookingservice.Model.*;
 import com.example.bookingservice.Repository.*;
-import com.example.bookingservice.Repository.Service.BookingDetailsRepoService;
-import com.example.bookingservice.Repository.Service.BusDetailsRepoService;
-import com.example.bookingservice.Repository.Service.JourneyRepoService;
-import com.example.bookingservice.Repository.Service.PassengersRepoService;
+import com.example.bookingservice.Repository.Service.*;
 import com.example.bookingservice.Service.bookingService;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
@@ -26,11 +23,12 @@ public class bookingServiceImpl implements bookingService {
     private final  PassengersRepository passengersRepository;
     private final PassengersRepoService passengersRepoService;
     private final PaymentRepository paymentRepository;
+    private final PaymentRepoService paymentRepoService;
     private final UserDetailsRepository userDetailsRepository;
     private final ModelMapper modelMapper;
     private final LayoutRepository layoutRepository;
 
-    public bookingServiceImpl(JourneyRepository journeyRepository, BusDetailsRepository busDetailsRepository, LayoutRepository layoutRepository, ModelMapper modelMapper, BusDetailsRepoService busDetailsRepoService, JourneyRepoService journeyRepoService, BookingDetailsRepoService bookingDetailsRepoService,PassengersRepository passengersRepository, PassengersRepoService passengersRepoService, UserDetailsRepository userDetailsRepository, BookingDetailsRepository bookingDetailsRepository,PaymentRepository paymentRepository) {
+    public bookingServiceImpl(JourneyRepository journeyRepository, BusDetailsRepository busDetailsRepository, LayoutRepository layoutRepository, ModelMapper modelMapper, BusDetailsRepoService busDetailsRepoService, JourneyRepoService journeyRepoService, BookingDetailsRepoService bookingDetailsRepoService,PassengersRepository passengersRepository, PassengersRepoService passengersRepoService, UserDetailsRepository userDetailsRepository, BookingDetailsRepository bookingDetailsRepository,PaymentRepository paymentRepository,PaymentRepoService paymentRepoService) {
         this.journeyRepository = journeyRepository;
         this.journeyRepoService = journeyRepoService;
         this.busDetailsRepository = busDetailsRepository;
@@ -42,6 +40,7 @@ public class bookingServiceImpl implements bookingService {
         this.userDetailsRepository = userDetailsRepository;
         this.layoutRepository = layoutRepository;
         this.paymentRepository=paymentRepository;
+        this.paymentRepoService=paymentRepoService;
         this.modelMapper = modelMapper;
     }
 
@@ -154,6 +153,24 @@ public class bookingServiceImpl implements bookingService {
         ticket.setBusName(busDetailsRepository.findById(bookingDetails.getBusId()).get().getName());
         return ticket;
     }
+
+    @Override
+    public String cancelBookingSerice(CancelDto cancelDto) {
+        BookingDetails booking=paymentRepoService.findByPNR(cancelDto.getPnr()).getBookingDetails();
+        List<Passengers> passengers=passengersRepoService.findByBookingDetails(booking);
+        for (Passengers passenger:passengers){
+            int seat=Integer.parseInt(passenger.getSeatNo().split(" ")[1]);
+            if(cancelDto.getSeats().contains(seat)){
+                passenger.setSeatStatus("cancelled");
+                passengersRepository.save(passenger);
+                cancelDto.getSeats().remove(cancelDto.getSeats().indexOf(seat));
+                System.out.println(cancelDto.getSeats()+"  seats");
+            }
+        }
+
+        return "seats cancelled";
+    }
+
     @Scheduled(fixedDelay = 1000)
     public void unblock(){
        List<Passengers> passengers= passengersRepoService.findBySeatStatus("blocked");

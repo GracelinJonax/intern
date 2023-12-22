@@ -12,4 +12,6 @@ import java.util.List;
 public interface PassengersRepoService {
     List<Passengers> findByBookingDetailsAndSeatStatus(BookingDetails bookingDetails,String seatStatus);
     List<Passengers> findBySeatStatus(String seatStatus);
+
+    List<Passengers> findByBookingDetails(BookingDetails booking);
 }

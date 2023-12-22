@@ -48,4 +48,9 @@ public class bookingController implements bookingApi {
     public ResponseEntity<TicketDto> makePayment(PaymentDto payment) {
         return new ResponseEntity<>(bookingService.makePayment(payment),HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<String> cancelBooking(CancelDto cancelDto) {
+        return new ResponseEntity<>(bookingService.cancelBookingSerice(cancelDto),HttpStatus.OK);
+    }
 }
