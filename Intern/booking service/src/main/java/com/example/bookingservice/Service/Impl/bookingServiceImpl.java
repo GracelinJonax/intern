@@ -27,8 +27,9 @@ public class bookingServiceImpl implements bookingService {
     private final UserDetailsRepository userDetailsRepository;
     private final ModelMapper modelMapper;
     private final LayoutRepository layoutRepository;
+    private final RefundRepository refundRepository;
 
-    public bookingServiceImpl(JourneyRepository journeyRepository, BusDetailsRepository busDetailsRepository, LayoutRepository layoutRepository, ModelMapper modelMapper, BusDetailsRepoService busDetailsRepoService, JourneyRepoService journeyRepoService, BookingDetailsRepoService bookingDetailsRepoService,PassengersRepository passengersRepository, PassengersRepoService passengersRepoService, UserDetailsRepository userDetailsRepository, BookingDetailsRepository bookingDetailsRepository,PaymentRepository paymentRepository,PaymentRepoService paymentRepoService) {
+    public bookingServiceImpl(JourneyRepository journeyRepository, BusDetailsRepository busDetailsRepository, LayoutRepository layoutRepository, ModelMapper modelMapper, BusDetailsRepoService busDetailsRepoService, JourneyRepoService journeyRepoService, BookingDetailsRepoService bookingDetailsRepoService,PassengersRepository passengersRepository, PassengersRepoService passengersRepoService, UserDetailsRepository userDetailsRepository, BookingDetailsRepository bookingDetailsRepository,PaymentRepository paymentRepository,PaymentRepoService paymentRepoService,RefundRepository refundRepository) {
         this.journeyRepository = journeyRepository;
         this.journeyRepoService = journeyRepoService;
         this.busDetailsRepository = busDetailsRepository;
@@ -41,6 +42,7 @@ public class bookingServiceImpl implements bookingService {
         this.layoutRepository = layoutRepository;
         this.paymentRepository=paymentRepository;
         this.paymentRepoService=paymentRepoService;
+        this.refundRepository=refundRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -157,18 +159,35 @@ public class bookingServiceImpl implements bookingService {
     @Override
     public String cancelBookingSerice(CancelDto cancelDto) {
         BookingDetails booking=paymentRepoService.findByPNR(cancelDto.getPnr()).getBookingDetails();
+        List< BusDetails.Seat> seats =busDetailsRepository.findById(booking.getBusId()).get().getSeat();
         List<Passengers> passengers=passengersRepoService.findByBookingDetails(booking);
+        double amount=0;
         for (Passengers passenger:passengers){
             int seat=Integer.parseInt(passenger.getSeatNo().split(" ")[1]);
             if(cancelDto.getSeats().contains(seat)){
+                if(seat<=Integer.parseInt(seats.get(0).getSeatRange().split("-")[1])){
+                    if(passenger.getAge()>12)
+                        amount+=seats.get(0).getPrice().getAdultPrice();
+                    else
+                        amount+=seats.get(0).getPrice().getChildPrice();
+                }
+                else {
+                    if(passenger.getAge()>12)
+                        amount+=seats.get(1).getPrice().getAdultPrice();
+                    else
+                        amount+=seats.get(1).getPrice().getChildPrice();
+                }
                 passenger.setSeatStatus("cancelled");
                 passengersRepository.save(passenger);
                 cancelDto.getSeats().remove(cancelDto.getSeats().indexOf(seat));
                 System.out.println(cancelDto.getSeats()+"  seats");
             }
         }
-
-        return "seats cancelled";
+        Refund refund=new Refund();
+        refund.setAmount(amount/2);
+        refund.setPayment(paymentRepository.findByPNR(cancelDto.getPnr()));
+        refundRepository.save(refund);
+        return "seats cancelled and amount refund";
     }
 
     @Scheduled(fixedDelay = 1000)
