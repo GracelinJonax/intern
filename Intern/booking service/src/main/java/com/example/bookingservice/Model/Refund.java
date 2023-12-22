@@ -1,0 +1,18 @@
+package com.example.bookingservice.Model;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.Id;
+import lombok.Data;
+import org.hibernate.annotations.UuidGenerator;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+@Entity
+@Data
+@EntityListeners(AuditingEntityListener.class)
+public class Refund {
+    @Id
+    @UuidGenerator
+    private String id;
+    private double amount;
+}
