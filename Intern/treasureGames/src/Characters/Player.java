@@ -4,6 +4,7 @@ import Main.GamePanel;
 import Main.KeyHandler;
 
 import java.awt.*;
+import java.io.IOException;
 
 public class Player extends Character{
     GamePanel gamePanel;
@@ -32,5 +33,13 @@ public class Player extends Character{
     public void draw(Graphics2D g2){
         g2.setColor(Color.WHITE);
         g2.fillRect(x,y,gamePanel.titleSize,gamePanel.titleSize);
+    }
+    public void getPlayerImage(){
+        try {
+
+        }
+        catch (IOException e){
+
+        }
     }
 }

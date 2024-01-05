@@ -31,6 +31,7 @@ public class BusDetails {
         private String seatType;
         private String seatRange;
         private Price price;
+        private String femaleSeats;
         @Data
         public static class Price{
             private double adultPrice;

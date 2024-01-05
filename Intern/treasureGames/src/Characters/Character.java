@@ -6,4 +6,5 @@ public class Character {
     public int x,y;
     public int speed;
     public BufferedImage up;
+    public String direction;
 }

@@ -39,4 +39,9 @@ public class sampleController implements sample {
     public ResponseEntity<String> savePrice(String id, Price price) {
         return new ResponseEntity<>(sampleservice.savePriceService(id,price),HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<Price> savePricee(Price price) {
+        return new ResponseEntity<>(sampleservice.savePriceeService(price),HttpStatus.OK);
+    }
 }

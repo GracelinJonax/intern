@@ -153,7 +153,7 @@ public class bookingServiceImpl implements bookingService {
         System.out.println(seats);
         ticket.setSeats(seats);
         ticket.setBusName(busDetailsRepository.findById(bookingDetails.getBusId()).get().getName());
-        return ticket;
+        return ticket; 
     }
 
     @Override

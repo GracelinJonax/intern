@@ -48,4 +48,8 @@ public class sampleService {
         groceryRepo.deleteById(id);
         return "deleted";
     }
+
+    public Price savePriceeService(Price price) {
+
+    }
 }
