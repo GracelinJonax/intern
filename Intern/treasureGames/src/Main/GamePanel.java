@@ -1,6 +1,7 @@
 package Main;
 
 import Characters.Player;
+import background.Background;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,17 +10,17 @@ public class GamePanel extends JPanel implements Runnable{
     final int originalTileSize=16;
     final int scale=3;
     public final int titleSize=originalTileSize*scale;
-    final int maxScreenCol=16;
-    final int maxScreenRow=12;
-    final int screenWidth=titleSize*maxScreenCol;
-    final int screenHeight=titleSize*maxScreenRow;
+    public final int maxScreenCol=16;
+    public final int maxScreenRow=12;
+    public final int screenWidth=titleSize*maxScreenCol;
+    public final int screenHeight=titleSize*maxScreenRow;
 
     int FPS=60;
     KeyHandler kh=new KeyHandler();
     Thread gameThread;
     Player player=new Player(this,kh);
+    Background background=new Background(this);
 
-    int playerX=100,playerY=100,playerSpeed=4;
     public GamePanel(){
         this.setPreferredSize(new Dimension(screenWidth,screenHeight));
         this.setBackground(Color.BLACK);
@@ -82,6 +83,7 @@ public class GamePanel extends JPanel implements Runnable{
     public void paintComponent(Graphics g){
         super.paintComponent(g);
         Graphics2D g2=(Graphics2D) g;
+        background.draw(g2);
         player.draw(g2);
         g2.dispose();
     }
