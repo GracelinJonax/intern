@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/qrcode
+    username: postgres
+    password: Grace@2002
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
