@@ -5,11 +5,12 @@ import com.example.bookingservice.Model.*;
 import com.example.bookingservice.Repository.*;
 import com.example.bookingservice.Repository.Service.*;
 import com.example.bookingservice.Service.bookingService;
-import lombok.Data;
 import org.modelmapper.ModelMapper;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+//import java.sql.Date;
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -28,8 +29,16 @@ public class bookingServiceImpl implements bookingService {
     private final ModelMapper modelMapper;
     private final LayoutRepository layoutRepository;
     private final RefundRepository refundRepository;
+    private final RewardInformationRepository rewardInformationRepository;
+    private final RewardsRepository rewardsRepository;
+    private final RewardsRepoService rewardsRepoService;
 
-    public bookingServiceImpl(JourneyRepository journeyRepository, BusDetailsRepository busDetailsRepository, LayoutRepository layoutRepository, ModelMapper modelMapper, BusDetailsRepoService busDetailsRepoService, JourneyRepoService journeyRepoService, BookingDetailsRepoService bookingDetailsRepoService,PassengersRepository passengersRepository, PassengersRepoService passengersRepoService, UserDetailsRepository userDetailsRepository, BookingDetailsRepository bookingDetailsRepository,PaymentRepository paymentRepository,PaymentRepoService paymentRepoService,RefundRepository refundRepository) {
+    public bookingServiceImpl(JourneyRepository journeyRepository, BusDetailsRepository busDetailsRepository,LayoutRepository layoutRepository,
+        ModelMapper modelMapper, BusDetailsRepoService busDetailsRepoService, JourneyRepoService journeyRepoService,
+         BookingDetailsRepoService bookingDetailsRepoService,PassengersRepository passengersRepository, PassengersRepoService passengersRepoService,
+         UserDetailsRepository userDetailsRepository, BookingDetailsRepository bookingDetailsRepository,PaymentRepository paymentRepository,
+         PaymentRepoService paymentRepoService,RefundRepository refundRepository,RewardInformationRepository rewardInformationRepository,
+          RewardsRepository rewardsRepository,RewardsRepoService rewardsRepoService) {
         this.journeyRepository = journeyRepository;
         this.journeyRepoService = journeyRepoService;
         this.busDetailsRepository = busDetailsRepository;
@@ -44,6 +53,9 @@ public class bookingServiceImpl implements bookingService {
         this.paymentRepoService=paymentRepoService;
         this.refundRepository=refundRepository;
         this.modelMapper = modelMapper;
+        this.rewardInformationRepository=rewardInformationRepository;
+        this.rewardsRepository=rewardsRepository;
+        this.rewardsRepoService=rewardsRepoService;
     }
 
     @Override
@@ -134,7 +146,7 @@ public class bookingServiceImpl implements bookingService {
     }
 
     @Override
-    public TicketDto makePayment(PaymentDto paymentDto) {
+    public RewardDto makePayment(PaymentDto paymentDto) {
         Payment payment=new Payment();
         modelMapper.map(paymentDto,payment);
         BookingDetails bookingDetails=bookingDetailsRepository.findById(paymentDto.getBookId()).get();
@@ -153,9 +165,26 @@ public class bookingServiceImpl implements bookingService {
         System.out.println(seats);
         ticket.setSeats(seats);
         ticket.setBusName(busDetailsRepository.findById(bookingDetails.getBusId()).get().getName());
-        return ticket; 
+        RewardDto rewardDto=new RewardDto();
+        rewardDto.setRewards(findReward(bookingDetails.getUser()));
+        rewardDto.setTicket(ticket);
+        return rewardDto;
     }
-
+    Rewards findReward(UserDetails user){
+        Rewards rewards=new Rewards();
+        List<RewardInformation> totalRewards=rewardInformationRepository.findAll();
+        int index=new Random().nextInt(totalRewards.size());
+        RewardInformation selectedReward=totalRewards.get(index);
+        rewards.setInformation(selectedReward);
+        rewards.setStatus("assigned");
+        rewards.setUserDetails(user);
+        LocalDate date=LocalDate.now();
+        rewards.setValidDate(date.plusDays(selectedReward.getValidity()));
+        rewards=rewardsRepository.save(rewards);
+        Base64.Encoder encoder=Base64.getEncoder();
+        String coupon=encoder.encodeToString((selectedReward.getInformation()+" expiry date: "+rewards.getValidDate()).getBytes());
+        return rewards;
+    }
     @Override
     public String cancelBookingSerice(CancelDto cancelDto) {
         BookingDetails booking=paymentRepoService.findByPNR(cancelDto.getPnr()).getBookingDetails();
@@ -190,17 +219,54 @@ public class bookingServiceImpl implements bookingService {
         return "seats cancelled and amount refund";
     }
 
+    @Override
+    public List<RewardInformation> saveAllRewards(RewardInformation rewardInformation) {
+        if(rewardInformation.getType().equals("code"))
+            rewardInformation.setInformation(rewardInformation.getInformation()+" "+UUID.randomUUID());
+        rewardInformationRepository.save(rewardInformation);
+        return rewardInformationRepository.findAll();
+    }
+
+    @Override
+    public Rewards getRewardService(Long id) {
+        Rewards rewards=rewardsRepository.findById(id).get();
+        if (rewards.getStatus().equals("assigned"))
+        rewards.setStatus("opened");
+        else if (rewards.getStatus().equals("opened"))
+            rewards.setStatus("claimed");
+        return rewardsRepository.save(rewards);
+    }
+
+    @Override
+    public List<Rewards> getUserRewardService(String userId) {
+        UserDetails userDetails=userDetailsRepository.findById(userId).get();
+        return rewardsRepoService.findByUserDetails(userDetails);
+    }
+
     @Scheduled(fixedDelay = 1000)
     public void unblock(){
        List<Passengers> passengers= passengersRepoService.findBySeatStatus("blocked");
         System.out.println(passengers);
        for(Passengers passenger:passengers){
            long l = new Date().getTime() - passenger.getCreatedDate().getTime();
-           System.out.println(l+"  time");
+           System.out.println(l+"  block");
            if(l>=1200000){
                passenger.setSeatStatus("unblocked");
                passengersRepository.save(passenger);
            }
        }
+       List<Rewards> rewards=rewardsRepoService.findByStatusIsNot("expired");
+       for(Rewards reward:rewards){
+//           ZonedDateTime z=ZonedDateTime.of(reward.getValidDate().plusDays(1), ZoneId.systemDefault());
+//           long date = z.toInstant().toEpochMilli();
+           java.sql.Date date= java.sql.Date.valueOf(reward.getValidDate().plusDays(1));
+           long l=date.getTime()-new Date().getTime();
+           System.out.println(l+" reward");
+           if(l<=0){
+               reward.setStatus("expired");
+               rewardsRepository.save(reward);
+           }
+       }
     }
+
 }

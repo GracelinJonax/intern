@@ -2,6 +2,8 @@ package com.example.bookingservice.Service;
 
 import com.example.bookingservice.Dto.*;
 import com.example.bookingservice.Model.BusDetails;
+import com.example.bookingservice.Model.RewardInformation;
+import com.example.bookingservice.Model.Rewards;
 import com.example.bookingservice.Model.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +22,13 @@ public interface bookingService {
 
     String saveUserService(UserDetails userDetails);
 
-    TicketDto makePayment(PaymentDto payment);
+    RewardDto makePayment(PaymentDto payment);
 
     String cancelBookingSerice(CancelDto cancelDto);
+
+    List<RewardInformation> saveAllRewards(RewardInformation rewardInformation);
+
+    Rewards getRewardService(Long id);
+
+    List<Rewards> getUserRewardService(String userId);
 }

@@ -3,6 +3,8 @@ package com.example.bookingservice.Controller;
 import com.example.bookingservice.Api.bookingApi;
 import com.example.bookingservice.Dto.*;
 import com.example.bookingservice.Model.BusDetails;
+import com.example.bookingservice.Model.RewardInformation;
+import com.example.bookingservice.Model.Rewards;
 import com.example.bookingservice.Model.UserDetails;
 import com.example.bookingservice.Service.bookingService;
 import org.springframework.http.HttpStatus;
@@ -45,12 +47,27 @@ public class bookingController implements bookingApi {
     }
 
     @Override
-    public ResponseEntity<TicketDto> makePayment(PaymentDto payment) {
+    public ResponseEntity<RewardDto> makePayment(PaymentDto payment) {
         return new ResponseEntity<>(bookingService.makePayment(payment),HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<String> cancelBooking(CancelDto cancelDto) {
         return new ResponseEntity<>(bookingService.cancelBookingSerice(cancelDto),HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<List<RewardInformation>> saveRewardInformation(RewardInformation rewardInformation) {
+        return new ResponseEntity<>(bookingService.saveAllRewards(rewardInformation),HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Rewards> getReward(Long id) {
+        return new ResponseEntity<>(bookingService.getRewardService(id),HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<List<Rewards>> getUserReward(String userId) {
+        return new ResponseEntity<>(bookingService.getUserRewardService(userId),HttpStatus.OK);
     }
 }
