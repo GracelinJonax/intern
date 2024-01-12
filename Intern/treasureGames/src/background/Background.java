@@ -12,38 +12,39 @@ import java.util.Arrays;
 
 public class Background {
     GamePanel gamePanel;
-    Tile[] tiles;
-    int[][] map;
+    public Tile[] tiles;
+    public int[][] map;
 
     public Background(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
         tiles = new Tile[10];
-        map=new int[gamePanel.maxScreenRow][gamePanel.maxScreenCol];
+        map = new int[gamePanel.maxWorldCol][gamePanel.maxWorldRow];
         getTileImage();
-        loadMap("/maps/map.txt");
+        loadMap("/maps/world01.txt");
     }
-    public void loadMap(String path){
+
+    public void loadMap(String path) {
         try {
-            InputStream io=getClass().getResourceAsStream(path);
-            BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(io));
+            InputStream io = getClass().getResourceAsStream(path);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(io));
 
-            int col=0;
-            int row=0;
+            int col = 0;
+            int row = 0;
 
-            while (col< gamePanel.maxScreenCol && row< gamePanel.maxScreenRow){
-                String line=bufferedReader.readLine();
+            while (col < gamePanel.maxWorldCol && row < gamePanel.maxWorldRow) {
+                String line = bufferedReader.readLine();
                 System.out.println(line);
-                String mapData[]=line.split(" ");
-                for (int i=0;i<mapData.length;i++){
-                    System.out.println("i am in");
-                    map[row][col]=Integer.parseInt(mapData[i]);
+                String[] mapData = line.split(" ");
+                for (String mapDatum : mapData) {
+                    map[row][col] = Integer.parseInt(mapDatum);
                     col++;
                 }
-                col=0;
+                col = 0;
                 row++;
             }
             bufferedReader.close();
-        }catch (Exception e){
+            System.out.println(Arrays.deepToString(map));
+        } catch (Exception e) {
 
         }
     }
@@ -52,22 +53,43 @@ public class Background {
         try {
             tiles[0] = new Tile();
             tiles[0].image = ImageIO.read(getClass().getResourceAsStream("/tiles/grass01.png"));
+
             tiles[1] = new Tile();
             tiles[1].image = ImageIO.read(getClass().getResourceAsStream("/tiles/wall.png"));
+            tiles[1].collision=true;
+
             tiles[2] = new Tile();
             tiles[2].image = ImageIO.read(getClass().getResourceAsStream("/tiles/water.png"));
+            tiles[2].collision=true;
+
+            tiles[3] = new Tile();
+            tiles[3].image = ImageIO.read(getClass().getResourceAsStream("/tiles/earth.png"));
+
+            tiles[4] = new Tile();
+            tiles[4].image = ImageIO.read(getClass().getResourceAsStream("/tiles/tree.png"));
+            tiles[4].collision=true;
+
+            tiles[5] = new Tile();
+            tiles[5].image = ImageIO.read(getClass().getResourceAsStream("/tiles/sand.png"));
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void draw(Graphics2D g2) {
-        for (int i=0,y=0;i<map.length;i++,y+= gamePanel.titleSize){
-            int  x = 0;
-            for (int j=0;j<map[0].length;j++) {
-                int titleNo=map[i][j];
-                g2.drawImage(tiles[titleNo].image, x, y, gamePanel.titleSize, gamePanel.titleSize, null);
-                x += gamePanel.titleSize;
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[0].length; j++) {
+                int worldX = j * gamePanel.titleSize;
+                int worldY = i * gamePanel.titleSize;
+                int screenX = worldX - gamePanel.player.worldX + gamePanel.player.screenX;
+                int screenY = worldY - gamePanel.player.worldY + gamePanel.player.screenY;
+                int titleNo = map[i][j];
+                if (worldX + gamePanel.titleSize > gamePanel.player.worldX - gamePanel.player.screenX &&
+                    worldX - gamePanel.titleSize < gamePanel.player.worldX + gamePanel.player.screenX &&
+                    worldY + gamePanel.titleSize > gamePanel.player.worldY - gamePanel.player.screenY &&
+                    worldY - gamePanel.titleSize < gamePanel.player.worldY + gamePanel.player.screenY)
+                    g2.drawImage(tiles[titleNo].image, screenX, screenY, gamePanel.titleSize, gamePanel.titleSize, null);
             }
         }
     }

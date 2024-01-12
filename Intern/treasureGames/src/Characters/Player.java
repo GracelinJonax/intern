@@ -11,17 +11,21 @@ import java.io.IOException;
 public class Player extends Character {
     GamePanel gamePanel;
     KeyHandler keyHandler;
-
+    public final int screenX;
+    public final int screenY;
     public Player(GamePanel gamePanel, KeyHandler keyHandler) {
         this.gamePanel = gamePanel;
         this.keyHandler = keyHandler;
+        screenX= gamePanel.screenWidth/2-(gamePanel.titleSize/2);
+        screenY= gamePanel.screenHeight/2-(gamePanel.titleSize/2);
+        solidArea=new Rectangle(8,16,32,32);
         setDefaultValues();
         getPlayerImage();
     }
 
     public void setDefaultValues() {
-        x = 100;
-        y = 100;
+        worldX = gamePanel.titleSize*23;
+        worldY = gamePanel.titleSize*21;
         speed = 4;
         direction = "right";
     }
@@ -30,16 +34,30 @@ public class Player extends Character {
         if(keyHandler.up == true||keyHandler.down == true||keyHandler.left == true||keyHandler.right == true){
         if (keyHandler.up == true) {
             direction = "up";
-            y -= speed;
         } else if (keyHandler.down == true) {
             direction = "down";
-            y += speed;
         } else if (keyHandler.left == true) {
             direction = "left";
-            x -= speed;
         } else if (keyHandler.right == true) {
             direction = "right";
-            x += speed;
+        }
+        collisionOn=false;
+        gamePanel.checker.checkTile(this);
+        if(collisionOn==false){
+            switch (direction){
+                case "up":
+                    worldY -= speed;
+                    break;
+                case "down":
+                    worldY += speed;
+                    break;
+                case "left":
+                    worldX -= speed;
+                    break;
+                case "right":
+                    worldX += speed;
+                    break;
+            }
         }
         spriteCounter++;
         if (spriteCounter>12){
@@ -82,7 +100,7 @@ public class Player extends Character {
                     image = right2;
                 break;
         }
-        g2.drawImage(image, x, y, gamePanel.titleSize, gamePanel.titleSize, null);
+        g2.drawImage(image, screenX, screenY, gamePanel.titleSize, gamePanel.titleSize, null);
     }
 
     public void getPlayerImage() {

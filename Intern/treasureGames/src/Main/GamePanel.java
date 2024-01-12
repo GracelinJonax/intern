@@ -1,6 +1,7 @@
 package Main;
 
 import Characters.Player;
+import Objects.Object;
 import background.Background;
 
 import javax.swing.*;
@@ -15,11 +16,19 @@ public class GamePanel extends JPanel implements Runnable{
     public final int screenWidth=titleSize*maxScreenCol;
     public final int screenHeight=titleSize*maxScreenRow;
 
+    public final int maxWorldCol=50;
+    public final int maxWorldRow=50;
+    public final int maxWorldWidth=titleSize*maxWorldCol;
+    public final int maxWorldHeight=titleSize*maxWorldRow;
+
     int FPS=60;
     KeyHandler kh=new KeyHandler();
     Thread gameThread;
-    Player player=new Player(this,kh);
+    public Player player=new Player(this,kh);
+    public CollisionChecker checker=new CollisionChecker(this);
     Background background=new Background(this);
+    public Object object[]=new Object[10];
+    public AssetSetter assetSetter=new AssetSetter(this);
 
     public GamePanel(){
         this.setPreferredSize(new Dimension(screenWidth,screenHeight));
@@ -27,6 +36,9 @@ public class GamePanel extends JPanel implements Runnable{
         this.setDoubleBuffered(true);
         this.addKeyListener(kh);
         this.setFocusable(true);
+    }
+    public void setUpGame(){
+        assetSetter.setObject();
     }
     public void startGameThread(){
         gameThread=new Thread(this);
@@ -84,6 +96,10 @@ public class GamePanel extends JPanel implements Runnable{
         super.paintComponent(g);
         Graphics2D g2=(Graphics2D) g;
         background.draw(g2);
+        for (int i=0;i< object.length;i++){
+            if (object[i]!=null)
+                object[i].draw(g2,this);
+        }
         player.draw(g2);
         g2.dispose();
     }
