@@ -2,10 +2,7 @@ package com.example.bookingservice.Controller;
 
 import com.example.bookingservice.Api.bookingApi;
 import com.example.bookingservice.Dto.*;
-import com.example.bookingservice.Model.BusDetails;
-import com.example.bookingservice.Model.RewardInformation;
-import com.example.bookingservice.Model.Rewards;
-import com.example.bookingservice.Model.UserDetails;
+import com.example.bookingservice.Model.*;
 import com.example.bookingservice.Service.bookingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,17 +54,22 @@ public class bookingController implements bookingApi {
     }
 
     @Override
-    public ResponseEntity<List<RewardInformation>> saveRewardInformation(RewardInformation rewardInformation) {
-        return new ResponseEntity<>(bookingService.saveAllRewards(rewardInformation),HttpStatus.OK);
+    public ResponseEntity<List<Offers>> saveRewardInformation(Offers offers) {
+        return new ResponseEntity<>(bookingService.saveAllRewards(offers),HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Rewards> getReward(Long id) {
+    public ResponseEntity<List<Links>> saveLinks(Links links) {
+        return new ResponseEntity<>(bookingService.saveLinksService(links),HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<OfferDto> getReward(Long id) {
         return new ResponseEntity<>(bookingService.getRewardService(id),HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<List<Rewards>> getUserReward(String userId) {
+    public ResponseEntity<List<OfferDto>> getUserReward(String userId) {
         return new ResponseEntity<>(bookingService.getUserRewardService(userId),HttpStatus.OK);
     }
 }

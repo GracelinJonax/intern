@@ -11,5 +11,7 @@ public class Character {
     public int spriteCounter=0;
     public int spriteNo=1;
     public Rectangle solidArea;
+    public int saDefaultX;
+    public int saDefaultY;
     public boolean collisionOn=false;
 }

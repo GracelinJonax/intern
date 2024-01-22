@@ -1,10 +1,7 @@
 package com.example.bookingservice.Service;
 
 import com.example.bookingservice.Dto.*;
-import com.example.bookingservice.Model.BusDetails;
-import com.example.bookingservice.Model.RewardInformation;
-import com.example.bookingservice.Model.Rewards;
-import com.example.bookingservice.Model.UserDetails;
+import com.example.bookingservice.Model.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,9 +23,11 @@ public interface bookingService {
 
     String cancelBookingSerice(CancelDto cancelDto);
 
-    List<RewardInformation> saveAllRewards(RewardInformation rewardInformation);
+    List<Offers> saveAllRewards(Offers offers);
 
-    Rewards getRewardService(Long id);
+    OfferDto getRewardService(Long id);
 
-    List<Rewards> getUserRewardService(String userId);
+    List<OfferDto> getUserRewardService(String userId);
+
+    List<Links> saveLinksService(Links links);
 }

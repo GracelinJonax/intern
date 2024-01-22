@@ -6,11 +6,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
 
-import java.time.LocalDate;
-
 @Entity
 @Data
-public class RewardInformation {
+public class Offers {
     @Id
     @GeneratedValue( strategy = GenerationType.AUTO)
     private long id;

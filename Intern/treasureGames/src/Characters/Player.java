@@ -19,6 +19,8 @@ public class Player extends Character {
         screenX= gamePanel.screenWidth/2-(gamePanel.titleSize/2);
         screenY= gamePanel.screenHeight/2-(gamePanel.titleSize/2);
         solidArea=new Rectangle(8,16,32,32);
+        saDefaultX=8;
+        saDefaultY=16;
         setDefaultValues();
         getPlayerImage();
     }

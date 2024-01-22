@@ -1,10 +1,7 @@
 package com.example.bookingservice.Api;
 
 import com.example.bookingservice.Dto.*;
-import com.example.bookingservice.Model.BusDetails;
-import com.example.bookingservice.Model.RewardInformation;
-import com.example.bookingservice.Model.Rewards;
-import com.example.bookingservice.Model.UserDetails;
+import com.example.bookingservice.Model.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,12 +28,15 @@ public interface bookingApi {
 
     @PostMapping("/cancel")
     ResponseEntity<String> cancelBooking(@RequestBody CancelDto cancelDto);
-    @PostMapping("/rewardInformation")
-    ResponseEntity<List<RewardInformation>> saveRewardInformation(@RequestBody RewardInformation rewardInformation);
+    @PostMapping("/offer")
+    ResponseEntity<List<Offers>> saveRewardInformation(@RequestBody Offers offers);
+    @PostMapping("/link")
+    ResponseEntity<List<Links>> saveLinks(@RequestBody Links links);
     @GetMapping("/getReward/{id}")
-    ResponseEntity<Rewards> getReward(@PathVariable Long id);
+    ResponseEntity<OfferDto> getReward(@PathVariable Long id);
 //    @PostMapping("/claimReward/{rewardId}")
 //    ResponseEntity<Rewards>claimReward(@PathVariable Long id);
     @GetMapping("/getUserReward/{userId}")
-    ResponseEntity<List<Rewards>> getUserReward(@PathVariable String userId);
+    ResponseEntity<List<OfferDto>> getUserReward(@PathVariable String userId);
+
 }

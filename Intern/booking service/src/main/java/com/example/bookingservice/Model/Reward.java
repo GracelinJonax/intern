@@ -7,23 +7,22 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
 @Data
 @EntityListeners(AuditingEntityListener.class)
-public class Rewards {
+public class Reward {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-//    private String rewardType;
     @ManyToOne
     private UserDetails userDetails;
-//    private String rewardInfo;
     @ManyToOne
-    RewardInformation information;
+    Offers offers;
+    private String linkId;
     private String status;
+    private boolean scratch;
     private LocalDate validDate;
     @CreatedDate
     private Date createdDate;

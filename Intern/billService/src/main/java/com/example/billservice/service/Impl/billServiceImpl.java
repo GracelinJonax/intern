@@ -47,4 +47,8 @@ public class billServiceImpl implements billService {
         System.out.println(bill.getId() + "  id");
         return bill.getId();
     }
+
+    public void aggregate(){
+
+    }
 }

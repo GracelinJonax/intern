@@ -11,6 +11,6 @@ public class Door extends Object{
         }catch (IOException e){
             e.printStackTrace();
         }
-
+        collision=true;
     }
 }
