@@ -1,4 +1,4 @@
-package com.example.qrcode;
+package com.example.qrcode.Api;
 
 import com.example.qrcode.Dto.qrReadDto;
 import com.example.qrcode.Model.UserDetails;

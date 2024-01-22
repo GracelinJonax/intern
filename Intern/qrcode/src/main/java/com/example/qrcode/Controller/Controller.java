@@ -1,6 +1,6 @@
 package com.example.qrcode.Controller;
 
-import com.example.qrcode.Api;
+import com.example.qrcode.Api.Api;
 import com.example.qrcode.Dto.qrReadDto;
 import com.example.qrcode.Model.UserDetails;
 import com.example.qrcode.Service.service;

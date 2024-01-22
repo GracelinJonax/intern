@@ -59,24 +59,13 @@ public class serviceImpl implements service {
 
     @Override
     public UserDetails connectionService(qrReadDto qrReadDto) {
-        String deviceId;
-        UserDetails userDetail;
-        try {
-            BufferedImage image= ImageIO.read(new File(qrReadDto.getFilePath()));
-            LuminanceSource source=new BufferedImageLuminanceSource(image);
-            BinaryBitmap bitmap=new BinaryBitmap(new HybridBinarizer(source));
-            Result result=new MultiFormatReader().decode(bitmap);
-            deviceId=result.getText();
-            userDetail=userDetailsRepoService.findByMobileNumber(qrReadDto.getMobileNumber());
+        String deviceId=qrReadDto.getDeviceId();
+        UserDetails userDetail=userDetailsRepoService.findByMobileNumber(qrReadDto.getMobileNumber());
             Device device=new Device();
             device.setDeviceId(deviceId);
             device.setUser(userDetail);
             device.setStatus("active");
             deviceRepository.save(device);
-
-        } catch (IOException | NotFoundException e) {
-            throw new RuntimeException(e);
-        }
         return userDetail;
     }
 }
