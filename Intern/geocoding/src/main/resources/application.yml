@@ -5,4 +5,6 @@ spring:
     url: jdbc:postgresql://localhost:5432/geocoding
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
+storeApi: store
+distanceApi: findDistance
