@@ -7,4 +7,5 @@ spring:
     hibernate:
       ddl-auto: update
 storeApi: store
+companyApi: company
 distanceApi: findDistance

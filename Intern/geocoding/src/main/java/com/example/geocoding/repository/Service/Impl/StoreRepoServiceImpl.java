@@ -1,5 +1,6 @@
 package com.example.geocoding.repository.Service.Impl;
 
+import com.example.geocoding.Model.Company;
 import com.example.geocoding.Model.Store;
 import com.example.geocoding.repository.Service.StoreRepoService;
 import com.example.geocoding.repository.StoreRepository;
@@ -15,7 +16,7 @@ public class StoreRepoServiceImpl implements StoreRepoService {
     }
 
     @Override
-    public List<Store> findStore(double latitude, double longitude, int distance) {
-        return storeRepository.findStore(longitude,longitude,distance);
+    public List<Store> findStore(double latitude, double longitude, int distance, Company company) {
+        return storeRepository.findStore(longitude,longitude,distance,company);
     }
 }

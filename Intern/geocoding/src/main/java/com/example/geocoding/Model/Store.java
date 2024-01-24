@@ -1,9 +1,6 @@
 package com.example.geocoding.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -15,4 +12,6 @@ public class Store {
     private String name;
     private double longitude;
     private double latitude;
+    @ManyToOne
+    private Company company;
 }
