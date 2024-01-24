@@ -19,5 +19,6 @@ public class orderBillDto {
         private int quantity;
         private Double price;
         private Double gst;
+        private Double totalPrice;
     }
 }

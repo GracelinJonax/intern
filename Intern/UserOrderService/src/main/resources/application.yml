@@ -2,9 +2,9 @@ spring:
   application:
     name: order
   datasource:
-    url: jdbc:sqlserver://127.0.0.1:1433;databaseName=Bill;encrypt=true;trustServerCertificate=true
-    username: sa
-    password: sa
+    url: jdbc:postgresql://localhost:5432/Bill
+    username: postgres
+    password: Grace@2002
   jpa:
     hibernate:
       ddl-auto: update
@@ -20,20 +20,8 @@ spring:
           starttls:
             enable: true
             required: true
-#    protocol:
-#      proxy:
-#        host: http://rbins-ap.bosch.com/ban.pac
-#        port: 80
-#        user: UCN1BAN
-#        password: WelcomeBosch./@123
 logging:
   level:
     com:
       zaxxer:
         hikari: DEBUG
-##http:
-##  proxyHost: http://rbins-ap.bosch.com/ban.pac
-##  nonProxyHosts: smtp.gmail.com
-#-Dhttp:
-#  proxyHost: http://rbins-ap.bosch.com/ban.pac
-#  proxyPort: 8080

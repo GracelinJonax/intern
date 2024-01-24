@@ -15,3 +15,11 @@ spring:
             required: true
 server:
   port: 8082
+billApi: toBill
+feignBill: bill
+feignBillUrl: localhost:8081
+emailType: text/html
+productsHtml: products
+total:  priceTotal
+htmlPageName: table
+emailSubject: Your Order is Confirmed

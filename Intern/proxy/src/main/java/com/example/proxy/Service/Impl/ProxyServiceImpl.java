@@ -4,7 +4,14 @@ import com.example.proxy.Dto.orderBillDto;
 import com.example.proxy.Feign.BillFeign;
 import com.example.proxy.Service.ProxyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.web.servlet.ModelAndView;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
+
+import java.util.HashMap;
 
 @Service
 public class ProxyServiceImpl implements ProxyService {
@@ -17,20 +24,27 @@ public class ProxyServiceImpl implements ProxyService {
     }
 
     @Override
-    public String saveBillService(orderBillDto orderBillDto) {
-        System.out.println(orderBillDto);
-        String billId = billFeign.saveBill(orderBillDto);
+    public void saveBillService(orderBillDto orderBillDto) {
+        billFeign.saveBill(orderBillDto);
         sendEmail(orderBillDto);
-        return billId;
     }
-
+    @Autowired
+    TemplateEngine templateEngine;
+    @Value("${productsHtml}")
+    String productsHtml;
+    @Value("${total}")
+    String total;
+    @Value("${htmlPageName}")
+    String html;
+    @Value("${emailSubject}")
+    String subject;
     void sendEmail(orderBillDto bill) {
-        String message = "<head>" + "</head>" + "<body>" + "<table border =1>" + "<tr>" + "<th>Product Name</th>" + "<th>Quantity</th>" + "<th>Gst</th>" + "<th>Price</th>";
-        for (orderBillDto.Product product : bill.getProducts()) {
-            message += "<tr>" + "<td>" + product.getName() + "</td>" + "<td>" + product.getQuantity() + "</td>" + "<td>" + product.getGst() + "</td>" + "<td>" + product.getPrice() + "</td>" + "</tr>";
-        }
-        message += "</table>" + "Total Price       " + bill.getTotalPrice() + "</body>" + "</html>";
+        Context context=new Context();
+
+        context.setVariable(productsHtml,bill.getProducts());
+        context.setVariable(total,bill.getTotalPrice());
+        String message=templateEngine.process(html,context);
         String email = bill.getUserEmail();
-        emailService.sendEmail(email, "Your Order is Confirmed", message);
+        emailService.sendEmail(email, subject, message);
     }
 }

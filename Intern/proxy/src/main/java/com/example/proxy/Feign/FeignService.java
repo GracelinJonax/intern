@@ -10,7 +10,7 @@ public class FeignService implements BillFeign {
     BillFeign billFeign;
 
     @Override
-    public String saveBill(orderBillDto orderBillDto) {
-        return billFeign.saveBill(orderBillDto);
+    public void saveBill(orderBillDto orderBillDto) {
+         billFeign.saveBill(orderBillDto);
     }
 }

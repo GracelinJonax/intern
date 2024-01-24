@@ -1,16 +1,15 @@
 package com.example.userorderservice.service;
 
-import com.example.userorderservice.Dto.orderBillDto;
-import com.example.userorderservice.Dto.orderDto;
+import com.example.userorderservice.Dto.OrderDto;
 import com.example.userorderservice.model.ProductDetails;
-import com.example.userorderservice.model.userDetails;
+import com.example.userorderservice.model.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface userOrderService {
-    String saveUserService(userDetails userDetails);
+    String saveUserService(UserDetails userDetails);
 
-    String orderProductService(orderDto orderDto);
+    String orderProductService(OrderDto orderDto);
 
     String saveProductService(ProductDetails productDetails);
 

@@ -10,6 +10,6 @@ import java.util.concurrent.ExecutionException;
 
 @RestController
 public interface ProxyApi {
-    @PostMapping("/toBill")
-    ResponseEntity<String> saveBill(@RequestBody orderBillDto orderBillDto);
+    @PostMapping("${billApi}")
+    void saveBill(@RequestBody orderBillDto orderBillDto);
 }

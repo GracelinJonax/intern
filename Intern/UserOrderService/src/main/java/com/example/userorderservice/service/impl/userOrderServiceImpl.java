@@ -1,24 +1,18 @@
 package com.example.userorderservice.service.impl;
 
-import com.example.userorderservice.Dto.orderBillDto;
-import com.example.userorderservice.Dto.orderDto;
+import com.example.userorderservice.Dto.OrderBillDto;
+import com.example.userorderservice.Dto.OrderDto;
 import com.example.userorderservice.feign.ProxyFeign;
 import com.example.userorderservice.model.OrderDetails;
 import com.example.userorderservice.model.OrderedProductDetails;
 import com.example.userorderservice.model.ProductDetails;
-import com.example.userorderservice.model.userDetails;
+import com.example.userorderservice.model.UserDetails;
 import com.example.userorderservice.repository.OrderDetailsRepository;
 import com.example.userorderservice.repository.OrderedProductDetailsRepository;
-import com.example.userorderservice.repository.productDetailsRepository;
-import com.example.userorderservice.repository.service.OrderDetailsRepositoryService;
-import com.example.userorderservice.repository.service.OrderedProductDetailsRepositoryService;
-import com.example.userorderservice.repository.service.productDetailsRepositoryService;
-import com.example.userorderservice.repository.service.userDetailsRepositoryService;
-import com.example.userorderservice.repository.userDetailsRepository;
+import com.example.userorderservice.repository.ProductDetailsRepository;
+import com.example.userorderservice.repository.UserDetailsRepository;
 import com.example.userorderservice.service.userOrderService;
-import jakarta.servlet.http.HttpServletResponse;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,86 +21,89 @@ import java.util.Optional;
 
 @Service
 public class userOrderServiceImpl implements userOrderService {
-    private final userDetailsRepository userDetailsRepository;
-    private final productDetailsRepository productDetailsRepository;
+    private final UserDetailsRepository userDetailsRepository;
+    private final ProductDetailsRepository productDetailsRepository;
     private final OrderDetailsRepository orderDetailsRepository;
     private final OrderedProductDetailsRepository orderedProductDetailsRepository;
-    private final userDetailsRepositoryService userDetailsRepositoryService;
-    private final productDetailsRepositoryService productDetailsRepositoryService;
-    private final OrderDetailsRepositoryService orderDetailsRepositoryService;
-    private final OrderedProductDetailsRepositoryService orderedProductDetailsRepositoryService;
     private final ProxyFeign ProxyFeign;
     private final ModelMapper modelMapper;
-    @Autowired
-    private HttpServletResponse productResponsePage;
 
-    public userOrderServiceImpl(userDetailsRepository userDetailsRepository,
-            productDetailsRepository productDetailsRepository, OrderDetailsRepository orderDetailsRepository,
-            OrderedProductDetailsRepository orderedProductDetailsRepository,
-            userDetailsRepositoryService userDetailsRepositoryService,
-            productDetailsRepositoryService productDetailsRepositoryService,
-            OrderDetailsRepositoryService orderDetailsRepositoryService,
-            OrderedProductDetailsRepositoryService orderedProductDetailsRepositoryService, ProxyFeign ProxyFeign,
-            ModelMapper modelMapper) {
+    public userOrderServiceImpl(UserDetailsRepository userDetailsRepository,
+                                ProductDetailsRepository productDetailsRepository, OrderDetailsRepository orderDetailsRepository,
+                                OrderedProductDetailsRepository orderedProductDetailsRepository,
+                                ProxyFeign ProxyFeign,ModelMapper modelMapper) {
         this.userDetailsRepository = userDetailsRepository;
         this.productDetailsRepository = productDetailsRepository;
         this.orderDetailsRepository = orderDetailsRepository;
         this.orderedProductDetailsRepository = orderedProductDetailsRepository;
-        this.userDetailsRepositoryService = userDetailsRepositoryService;
-        this.productDetailsRepositoryService = productDetailsRepositoryService;
-        this.orderDetailsRepositoryService = orderDetailsRepositoryService;
-        this.orderedProductDetailsRepositoryService = orderedProductDetailsRepositoryService;
         this.modelMapper = modelMapper;
         this.ProxyFeign = ProxyFeign;
     }
 
     @Override
-    public String saveUserService(userDetails userDetails) {
+    public String saveUserService(UserDetails userDetails) {
+        if(userDetails==null)
+            return "user is null";
+        else if (userDetails.getName().length()>50)
+            return "username is too long";
+        else if (!userDetails.getEmail().contains("@"))
+            return "user email is invalid";
         userDetailsRepository.save(userDetails);
         return "success";
     }
 
     @Override
     public String saveProductService(ProductDetails productDetails) {
+        if (productDetails==null)
+            throw new RuntimeException("product is null");
+        else if (productDetails.getName().length()>50)
+            throw new RuntimeException("product details is too long");
+        else if (productDetails.getPrice()==null||productDetails.getGst()==null)
+            throw new RuntimeException("product details has null values");
         productDetailsRepository.save(productDetails);
         return "success";
     }
 
     @Override
-    public String orderProductService(orderDto orderDto) {
-        orderBillDto bill = new orderBillDto();
+    public String orderProductService(OrderDto orderDto) {
+        if(orderDto==null)
+            throw new RuntimeException("no order is placed");
+        OrderBillDto bill = new OrderBillDto();
         OrderDetails orderDetails = new OrderDetails();
-        Optional<userDetails> userDetails = userDetailsRepository.findById(orderDto.getUserId());
+        Optional<UserDetails> userDetails = userDetailsRepository.findById(orderDto.getUserId());
         orderDetails.setUserDetails(userDetails.get());
-        OrderDetails orderDetails1 = orderDetailsRepository.save(orderDetails);
+//        OrderDetails orderDetails1 = orderDetailsRepository.save(orderDetails);
         bill.setUserId(userDetails.get().getUserId());
         bill.setUserEmail(userDetails.get().getEmail());
-        bill.setOrderId(orderDetails1.getOrderId());
-        List<orderDto.Product> product = orderDto.getProductDetailsList();
-        List<orderBillDto.Product> billProductList = new ArrayList<>();
-        Double totalPrice = 0.0;
-        for (orderDto.Product productOrdered : product) {
-            orderBillDto.Product billProduct = new orderBillDto.Product();
+        //
+        bill.setOrderId(orderDetails.getOrderId());
+        List<OrderBillDto.Product> billProductList = new ArrayList<>();
+        List<OrderedProductDetails> orderedProductDetailsList=new ArrayList<>();
+        double totalPrice = 0.0;
+        for (OrderDto.Product productOrdered : orderDto.getProductDetailsList()) {
+            OrderBillDto.Product billProduct = new OrderBillDto.Product();
             OrderedProductDetails orderedProductDetails = new OrderedProductDetails();
             modelMapper.map(productOrdered, orderedProductDetails);
-            orderedProductDetails.setOrderDetails(orderDetails1);
+            orderedProductDetails.setOrderDetails(orderDetails);
             Optional<ProductDetails> productDetails = productDetailsRepository.findById(productOrdered.getProductId());
             ProductDetails productDetail = productDetails.get();
             modelMapper.map(productDetail, billProduct);
             billProduct.setQuantity(productOrdered.getQuantity());
             orderedProductDetails.setProductDetails(productDetail);
-            orderedProductDetailsRepository.save(orderedProductDetails);
-            totalPrice += ((productDetail.getPrice() + ((productDetail.getPrice() * productDetail.getGst()) / 100)) * productOrdered.getQuantity());
+            orderedProductDetailsList.add(orderedProductDetails);
+            double price=((productDetail.getPrice() + ((productDetail.getPrice() * productDetail.getGst()) / 100)) * productOrdered.getQuantity());
+            billProduct.setTotalPrice(price);
+            totalPrice+=price;
             billProductList.add(billProduct);
         }
-        orderDetails1.setTotalPrice(totalPrice);
+        orderDetails.setTotalPrice(totalPrice);
         bill.setTotalPrice(totalPrice);
         bill.setProducts(billProductList);
-        String billId = ProxyFeign.saveBill(bill).getBody();
-        orderDetails1.setBillId(billId);
-        String id = orderDetails1.getOrderId();
-        orderDetailsRepository.save(orderDetails1);
+        ProxyFeign.saveBill(bill);
 
+        orderDetailsRepository.save(orderDetails);
+        String id = orderDetails.getOrderId();
+        orderedProductDetailsRepository.saveAll(orderedProductDetailsList);
         return id;
     }
 

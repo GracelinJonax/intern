@@ -1,26 +1,24 @@
 package com.example.userorderservice.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import com.example.userorderservice.util.ApplicationConstants;
+import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UuidGenerator;
 
 @Entity
 @Data
 public class OrderedProductDetails {
+    @Id
+//    @GeneratedValue(generator = "system-uuid")
+//    @GenericGenerator(name = "system-uuid", strategy = "uuid")
+    @UuidGenerator
+    private String orderedProductId;
     @ManyToOne
-    @JoinColumn(name = "orderId")
+    @JoinColumn(name = ApplicationConstants.orderForeignKey)
     OrderDetails orderDetails;
     @OneToOne
-    @JoinColumn(name = "productId")
+    @JoinColumn(name = ApplicationConstants.productForeignKey)
     ProductDetails productDetails;
-    @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid")
-    private String orderedProductId;
+
     private int quantity;
 }

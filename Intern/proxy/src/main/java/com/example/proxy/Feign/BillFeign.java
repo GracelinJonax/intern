@@ -5,8 +5,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "bill", url = "localhost:8081")
+@FeignClient(name = "${feignBill}", url = "${feignBillUrl}")
 public interface BillFeign {
-    @PostMapping("/bill")
-    String saveBill(@RequestBody orderBillDto orderBillDto);
+    @PostMapping("${feignBill}")
+    void saveBill(@RequestBody orderBillDto orderBillDto);
 }

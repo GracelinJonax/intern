@@ -16,7 +16,7 @@ public class ProxyController implements ProxyApi {
     }
 
     @Override
-    public ResponseEntity<String> saveBill(orderBillDto orderBillDto) {
-        return new ResponseEntity<>(proxyService.saveBillService(orderBillDto), HttpStatus.OK);
+    public void saveBill(orderBillDto orderBillDto) {
+        proxyService.saveBillService(orderBillDto);
     }
 }

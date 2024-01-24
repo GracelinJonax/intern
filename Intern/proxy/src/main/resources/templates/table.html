@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"
+</head>
+<body>
+your bill is
+<table style="border: 1px solid black;border-collapse:collapse">
+    <tr style="border-bottom: 1px solid black">
+        <th style="border-right: 1px solid black ; border-bottom: 1px solid black" >Product Name</th>
+        <th style="border-right: 1px solid black ; border-bottom: 1px solid black">Quantity</th>
+        <th style="border-right: 1px solid black ; border-bottom: 1px solid black">Gst</th>
+        <th style="border-right: 1px solid black ; border-bottom: 1px solid black">Price</th>
+        <th style="border-bottom: 1px solid black">totalPrice</th>
+    </tr>
+    <tr style="border-top: 1px solid black" th:each="product:${products}">
+        <td style="border-right: 1px solid black" th:text="*{product.name}"> name</td>
+        <td style="border-right: 1px solid black" th:text="*{product.quantity}"> quantity</td>
+        <td style="border-right: 1px solid black" th:text="*{product.gst}"> gst</td>
+        <td style="border-right: 1px solid black" th:text="*{product.price}"> price</td>
+        <td  th:text="*{product.totalPrice}"> totalPrice</td>
+    </tr>
+
+
+</table>
+<h3 th:text="'Total Price     :'+${priceTotal}">price</h3>
+</body>
+</html>

@@ -7,13 +7,12 @@ import org.hibernate.annotations.UuidGenerator;
 
 @Entity
 @Data
-public class ProductDetails {
+public class UserDetails {
     @Id
 //    @GeneratedValue(generator = "system-uuid")
 //    @GenericGenerator(name = "system-uuid", strategy = "uuid")
     @UuidGenerator
-    private String productId;
+    private String userId;
     private String name;
-    private Double price;
-    private Double gst;
+    private String email;
 }

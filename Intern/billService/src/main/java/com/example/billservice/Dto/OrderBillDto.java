@@ -1,11 +1,11 @@
-package com.example.userorderservice.Dto;
+package com.example.billservice.Dto;
 
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-public class orderBillDto {
+public class OrderBillDto {
     private String orderId;
     private String userId;
     private String userEmail;
@@ -19,5 +19,6 @@ public class orderBillDto {
         private int quantity;
         private Double price;
         private Double gst;
+        private Double totalPrice;
     }
 }
