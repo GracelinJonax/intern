@@ -6,6 +6,14 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+    show-sql: true
+#  security:
+#    user:
+#      name: user
+#      password: hai
 storeApi: store
 companyApi: company
 distanceApi: findDistance
+planApi: plan
+subscriptionApi: subscribe
+#noCompanyException: no such company present

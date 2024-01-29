@@ -1,9 +1,7 @@
 package com.example.geocoding.Service;
 
-import com.example.geocoding.Dto.DistanceDto;
-import com.example.geocoding.Dto.SaveStoreDto;
-import com.example.geocoding.Model.Company;
-import com.example.geocoding.Model.Store;
+import com.example.geocoding.Dto.*;
+import com.example.geocoding.Model.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,7 +9,10 @@ import java.util.List;
 @Service
 public interface Services {
     List<Store> saveStoreService(SaveStoreDto storeDto);
-    List<Store> findNearStoreService(DistanceDto distanceDto);
+    List<Company> saveCompanyService(SaveCompanyDto companyDto);
+    List<StoreCompanyView> findNearStoreService(DistanceDto distanceDto);
 
-    List<Company> saveCompanyService(Company company);
+    List<Plan> savePlanServices(SavePlanDto savePlanDto);
+
+    List<SubscriptionView> saveSubscriptionService(SubscriptionDto subscriptionDto);
 }

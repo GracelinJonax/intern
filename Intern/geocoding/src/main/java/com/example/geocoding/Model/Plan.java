@@ -7,12 +7,12 @@ import org.hibernate.annotations.UuidGenerator;
 
 @Entity
 @Data
-public class Company extends Address{
+public class Plan {
     @Id
     @UuidGenerator
-    private String companyId;
-    private String companyName;
-    private String contactNo;
-    private String gstNo;
-    private String password;
+    private String planId;
+    private String planDetails;
+    private String planType;
+    private Long totalRequest;
+    private int validDays;
 }

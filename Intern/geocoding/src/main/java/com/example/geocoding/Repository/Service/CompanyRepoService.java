@@ -1,4 +1,4 @@
-package com.example.geocoding.repository.Service;
+package com.example.geocoding.Repository.Service;
 
 import org.springframework.stereotype.Service;
 

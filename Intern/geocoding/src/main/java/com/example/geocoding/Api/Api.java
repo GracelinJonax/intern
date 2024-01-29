@@ -1,9 +1,8 @@
 package com.example.geocoding.Api;
 
-import com.example.geocoding.Dto.DistanceDto;
-import com.example.geocoding.Dto.SaveStoreDto;
-import com.example.geocoding.Model.Company;
-import com.example.geocoding.Model.Store;
+import com.example.geocoding.Dto.*;
+import com.example.geocoding.Model.*;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,9 +14,15 @@ import java.util.List;
 @RestController
 public interface Api {
     @PostMapping("${storeApi}")
-    ResponseEntity<List<Store>> saveStore(@RequestBody SaveStoreDto storeDto);
+    ResponseEntity<List<Store>> saveStore(@RequestBody @Valid SaveStoreDto storeDto);
     @PostMapping("${companyApi}")
-    ResponseEntity<List<Company>> saveCompany(@RequestBody Company company);
+    ResponseEntity<List<Company>> saveCompany(@RequestBody @Valid SaveCompanyDto companyDto);
     @GetMapping("${distanceApi}")
-    ResponseEntity<List<Store>> findNearStore(@RequestBody DistanceDto distanceDto);
+    ResponseEntity<List<StoreCompanyView>> findNearStore(@RequestBody @Valid DistanceDto distanceDto);
+    @PostMapping("${planApi}")
+    ResponseEntity<List<Plan>> savePlan (@RequestBody @Valid SavePlanDto planDto);
+    @PostMapping("${subscriptionApi}")
+    ResponseEntity<List<SubscriptionView>> saveSubscription (@RequestBody @Valid SubscriptionDto subscriptionDto);
+    @GetMapping("/loginn")
+    ResponseEntity<String> login();
 }

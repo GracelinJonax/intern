@@ -1,6 +1,6 @@
-package com.example.geocoding.repository.Service.Impl;
+package com.example.geocoding.Repository.Service.Impl;
 
-import com.example.geocoding.repository.Service.CompanyRepoService;
+import com.example.geocoding.Repository.Service.CompanyRepoService;
 import org.springframework.stereotype.Service;
 
 @Service
