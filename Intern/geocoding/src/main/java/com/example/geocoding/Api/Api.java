@@ -23,6 +23,6 @@ public interface Api {
     ResponseEntity<List<Plan>> savePlan (@RequestBody @Valid SavePlanDto planDto);
     @PostMapping("${subscriptionApi}")
     ResponseEntity<List<SubscriptionView>> saveSubscription (@RequestBody @Valid SubscriptionDto subscriptionDto);
-    @GetMapping("/loginn")
-    ResponseEntity<String> login();
+    @PostMapping("${companyLoginApi}")
+    ResponseEntity<String> login(@RequestBody LoginDto loginDto);
 }

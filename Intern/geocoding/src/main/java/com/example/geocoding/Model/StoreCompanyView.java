@@ -22,6 +22,6 @@ public class StoreCompanyView {
     private String city;
     private String state;
     private String country;
-    private Long companyId;
+    private String companyId;
     private String companyName;
 }

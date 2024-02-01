@@ -16,7 +16,7 @@ import java.util.Date;
 @Table(name = "subscription_view")
 public class SubscriptionView {
     @Id
-    private String subscription_id;
+    private String subscriptionId;
     private String companyId;
     private String companyName;
     private String planId;
