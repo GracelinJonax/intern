@@ -13,25 +13,21 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfiguration {
     private final JwtFilter jwtAuthFilter;
-//    private final AuthenticationProvider authenticationProvider;
 
+    //    private final AuthenticationProvider authenticationProvider;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        System.out.println(http+"  http");
-        http
-            .csrf()
+        System.out.println(http + "  http");
+        http.csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/companyLogin","/subscribe")
-                .permitAll()
+                .requestMatchers("/findDistance", "/store")
+                .authenticated()
 //                .requestMatchers("/subscribe")
 //                .access()
-                .anyRequest()
-                .authenticated()
-                .and()
+                .anyRequest().permitAll().and()
 //                .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-
 }

@@ -11,7 +11,7 @@ public class SaveStoreDto {
     private String companyId;
 
     @NotNull(message = "store Name must not be null")
-    @Size(max = 50,message = "store Name is too long")
+    @Size(max = 50, message = "store Name is too long")
     private String storeName;
 
     @NotNull(message = "contact Number must not be null")
@@ -19,11 +19,11 @@ public class SaveStoreDto {
     private String contactNo;
 
     @NotNull(message = "latitude must not be null")
-    @Range(max = 90,min = -90,message = "given latitude is not valid")
+    @Range(max = 90, min = -90, message = "given latitude is not valid")
     private Double latitude;
 
     @NotNull(message = "longitude must not be null")
-    @Range(max = 180,min = -180,message = "given longitude is not valid")
+    @Range(max = 180, min = -180, message = "given longitude is not valid")
     private Double longitude;
 
     @NotNull(message = "address must not be null")

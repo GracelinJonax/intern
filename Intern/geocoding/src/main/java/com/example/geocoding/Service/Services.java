@@ -9,11 +9,14 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public interface Services {
     List<Store> saveStoreService(SaveStoreDto storeDto);
+
     List<Company> saveCompanyService(SaveCompanyDto companyDto);
+
     List<StoreCompanyView> findNearStoreService(DistanceDto distanceDto);
 
     List<Plan> savePlanServices(SavePlanDto savePlanDto);
@@ -23,5 +26,8 @@ public interface Services {
     String loginService(LoginDto loginDto);
 
     boolean isSubscribed(String jwt);
+
     void saveRequestResponse(ContentCachingRequestWrapper c, HttpServletRequest request, ContentCachingResponseWrapper responseWrapper, HttpServletResponse response, String jwt);
+
+    Optional<Company> findCompany(String username);
 }

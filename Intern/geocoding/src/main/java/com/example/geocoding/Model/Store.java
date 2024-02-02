@@ -6,7 +6,7 @@ import org.hibernate.annotations.UuidGenerator;
 
 @Entity
 @Data
-public class Store extends Address{
+public class Store extends Address {
     @Id
     @UuidGenerator
     private String id;

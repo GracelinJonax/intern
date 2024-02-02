@@ -10,8 +10,9 @@ import java.util.Optional;
 @Service
 public class CompanyRepoServiceImpl implements CompanyRepoService {
     private final CompanyRepository companyRepository;
-    public CompanyRepoServiceImpl(CompanyRepository companyRepository){
-        this.companyRepository=companyRepository;
+
+    public CompanyRepoServiceImpl(CompanyRepository companyRepository) {
+        this.companyRepository = companyRepository;
     }
 
     @Override

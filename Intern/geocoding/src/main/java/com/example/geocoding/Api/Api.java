@@ -15,14 +15,19 @@ import java.util.List;
 public interface Api {
     @PostMapping("${storeApi}")
     ResponseEntity<List<Store>> saveStore(@RequestBody @Valid SaveStoreDto storeDto);
+
     @PostMapping("${companyApi}")
     ResponseEntity<List<Company>> saveCompany(@RequestBody @Valid SaveCompanyDto companyDto);
+
     @GetMapping("${distanceApi}")
     ResponseEntity<List<StoreCompanyView>> findNearStore(@RequestBody @Valid DistanceDto distanceDto);
+
     @PostMapping("${planApi}")
-    ResponseEntity<List<Plan>> savePlan (@RequestBody @Valid SavePlanDto planDto);
+    ResponseEntity<List<Plan>> savePlan(@RequestBody @Valid SavePlanDto planDto);
+
     @PostMapping("${subscriptionApi}")
-    ResponseEntity<List<SubscriptionView>> saveSubscription (@RequestBody @Valid SubscriptionDto subscriptionDto);
+    ResponseEntity<List<SubscriptionView>> saveSubscription(@RequestBody @Valid SubscriptionDto subscriptionDto);
+
     @PostMapping("${companyLoginApi}")
     ResponseEntity<String> login(@RequestBody LoginDto loginDto);
 }

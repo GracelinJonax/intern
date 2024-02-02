@@ -8,7 +8,5 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface StoreRepository extends JpaRepository<Store,Long> {
-    @Query("SELECT s from Store s where s.companyId=?4 AND ROUND(ACOS(COS(RADIANS( ?1 )-RADIANS(s.latitude))*COS(RADIANS(s.longitude)-RADIANS( ?2 ))) * 6371 ) <=?3")
-    List<Store> findStore(double latitude, double longitude, int Distance, Long companyId);
+public interface StoreRepository extends JpaRepository<Store, Long> {
 }

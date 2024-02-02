@@ -22,15 +22,9 @@ import java.util.List;
 @RestController
 public class Controller implements Api {
     private final Services services;
-//    private final AuthenticationManager authenticationManager;
-    private final CompanyRepoService companyRepoService;
-    private final JwtService jwtService;
 
-    public Controller(Services services,  CompanyRepoService companyRepoService, JwtService jwtService) {
+    public Controller(Services services) {
         this.services = services;
-//        this.authenticationManager = authenticationManager;AuthenticationManager authenticationManager,
-        this.companyRepoService = companyRepoService;
-        this.jwtService = jwtService;
     }
 
     @Override
@@ -50,22 +44,16 @@ public class Controller implements Api {
 
     @Override
     public ResponseEntity<List<Plan>> savePlan(SavePlanDto savePlanDto) {
-        return new ResponseEntity<>(services.savePlanServices(savePlanDto),HttpStatus.OK);
+        return new ResponseEntity<>(services.savePlanServices(savePlanDto), HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<List<SubscriptionView>> saveSubscription(SubscriptionDto subscriptionDto) {
-        return new ResponseEntity<>(services.saveSubscriptionService(subscriptionDto),HttpStatus.OK);
+        return new ResponseEntity<>(services.saveSubscriptionService(subscriptionDto), HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<String> login(LoginDto loginDto) {
-        return new ResponseEntity<>(services.loginService(loginDto),HttpStatus.OK);
-//        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(company.getCompanyName(),company.getPassword()));
-//        Company company1=companyRepoService.findByCompanyName(company.getCompanyName()).get();
-//        if (company.getPassword().equals(company1.getPassword()))
-//        return new ResponseEntity<>(jwtService.generateToken(new HashMap<>(),companyRepoService.findByCompanyName(company.getCompanyName()).get()),HttpStatus.OK);
-//        else
-//            throw new BadRequestException("not authorized");
+        return new ResponseEntity<>(services.loginService(loginDto), HttpStatus.OK);
     }
 }

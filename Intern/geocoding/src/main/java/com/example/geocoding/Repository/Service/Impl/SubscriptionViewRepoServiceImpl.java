@@ -23,6 +23,11 @@ public class SubscriptionViewRepoServiceImpl implements SubscriptionViewRepoServ
 
     @Override
     public Optional<SubscriptionView> findBySubscriptionIdAndExpiryDateAfter(String subscriptionId, LocalDate expiryDate) {
-        return subscriptionViewRepository.findBySubscriptionIdAndExpiryDateAfter(subscriptionId,expiryDate);
+        return subscriptionViewRepository.findBySubscriptionIdAndExpiryDateAfter(subscriptionId, expiryDate);
+    }
+
+    @Override
+    public SubscriptionView findBySubscriptionId(String subscriptionId) {
+        return subscriptionViewRepository.findBySubscriptionId(subscriptionId);
     }
 }
