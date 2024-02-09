@@ -9,6 +9,7 @@ import com.example.geocoding.Repository.CompanyRepository;
 import com.example.geocoding.Repository.Service.CompanyRepoService;
 import com.example.geocoding.Service.Services;
 import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -55,5 +56,10 @@ public class Controller implements Api {
     @Override
     public ResponseEntity<String> login(LoginDto loginDto) {
         return new ResponseEntity<>(services.loginService(loginDto), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<String> generateApikey(HttpServletRequest request) {
+        return new  ResponseEntity<>(services.generateApi(request),HttpStatus.OK);
     }
 }

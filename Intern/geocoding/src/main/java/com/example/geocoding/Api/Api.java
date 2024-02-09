@@ -2,6 +2,7 @@ package com.example.geocoding.Api;
 
 import com.example.geocoding.Dto.*;
 import com.example.geocoding.Model.*;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,4 +31,6 @@ public interface Api {
 
     @PostMapping("${companyLoginApi}")
     ResponseEntity<String> login(@RequestBody LoginDto loginDto);
+    @GetMapping("${apiKey}")
+    ResponseEntity<String> generateApikey(HttpServletRequest request);
 }

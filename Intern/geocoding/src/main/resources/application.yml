@@ -16,14 +16,19 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  config:
+    import: optional:file:.env[.properties]
 #  security:
 #    user:
 #      name: user
 #      password: hai
 storeApi: store
 companyApi: company
-distanceApi: findDistance
+distanceApi: findStores
 planApi: plan
 subscriptionApi: subscribe
 companyLoginApi: companyLogin
+apiKey: generateApikey
 #noCompanyException: no such company present
+
+privateKey: ${privatekey}

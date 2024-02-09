@@ -2,7 +2,6 @@ package com.example.geocoding.Config;
 
 import com.example.geocoding.Exception.BadRequestException;
 import com.example.geocoding.Model.Company;
-import com.example.geocoding.Repository.Service.CompanyRepoService;
 import com.example.geocoding.Service.Services;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -38,8 +37,18 @@ public class JwtFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String username;
+        if (request.getServletPath().equalsIgnoreCase("/findStores")){
+            String subscriptionId=services.isSubscribed(request.getHeader("ApiKey"));
+            if (subscriptionId!=null) {
+                filterChain.doFilter(requestWrapper, responseWrapper);
+                services.saveRequestResponse(requestWrapper, request, responseWrapper, response, subscriptionId);
+                responseWrapper.copyBodyToResponse();
+                return;
+            } else
+                throw new BadRequestException("subscription not valid");
+        }
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
+            filterChain.doFilter(request,response);
             return;
         }
         jwt = authHeader.substring(7);
@@ -47,14 +56,12 @@ public class JwtFilter extends OncePerRequestFilter {
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             Optional<Company> company = services.findCompany(username);
             if (company.isEmpty()) throw new UsernameNotFoundException("username not found");
-            if (jwtService.isTokenValid(jwt, company.get()) && services.isSubscribed(jwt)) {
+            if (jwtService.isTokenValid(jwt, company.get())) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(company, null, new ArrayList<>());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
-            } else throw new BadRequestException("token invalid or not subscribed");
+            } else throw new BadRequestException("token invalid");
         }
-        filterChain.doFilter(requestWrapper, responseWrapper);
-        services.saveRequestResponse(requestWrapper, request, responseWrapper, response, jwt);
-        responseWrapper.copyBodyToResponse();
+        filterChain.doFilter(request, response);
     }
 }

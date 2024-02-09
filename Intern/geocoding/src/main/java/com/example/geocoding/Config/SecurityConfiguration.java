@@ -17,11 +17,10 @@ public class SecurityConfiguration {
     //    private final AuthenticationProvider authenticationProvider;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        System.out.println(http + "  http");
         http.csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/findDistance", "/store")
+                .requestMatchers("/store")
                 .authenticated()
 //                .requestMatchers("/subscribe")
 //                .access()

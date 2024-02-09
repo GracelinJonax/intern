@@ -25,9 +25,11 @@ public interface Services {
 
     String loginService(LoginDto loginDto);
 
-    boolean isSubscribed(String jwt);
+    String isSubscribed(String jwt);
 
     void saveRequestResponse(ContentCachingRequestWrapper c, HttpServletRequest request, ContentCachingResponseWrapper responseWrapper, HttpServletResponse response, String jwt);
 
     Optional<Company> findCompany(String username);
+
+    String generateApi(HttpServletRequest request);
 }

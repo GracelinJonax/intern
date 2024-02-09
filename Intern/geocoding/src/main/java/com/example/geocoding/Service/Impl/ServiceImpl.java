@@ -5,28 +5,41 @@ import com.example.geocoding.Dto.*;
 import com.example.geocoding.Exception.BadRequestException;
 import com.example.geocoding.Model.*;
 import com.example.geocoding.Repository.*;
-import com.example.geocoding.Repository.Service.*;
+import com.example.geocoding.Repository.Service.CompanyRepoService;
+import com.example.geocoding.Repository.Service.RequestResponseLogRepoService;
+import com.example.geocoding.Repository.Service.StoreCompanyViewRepoService;
+import com.example.geocoding.Repository.Service.SubscriptionViewRepoService;
 import com.example.geocoding.Service.Services;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.security.*;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ServiceImpl implements Services {
-    @Autowired
-    private RedisTemplate<String, Long> redisTemplate;
+    @Value("${privateKey}")
+    String privatekey;
     private final StoreRepository storeRepository;
     private final CompanyRepository companyRepository;
     private final CompanyRepoService companyRepoService;
@@ -39,6 +52,8 @@ public class ServiceImpl implements Services {
     private final RequestResponseLogRepository requestResponseLogRepository;
     private final JwtService jwtService;
     private final ModelMapper modelMapper;
+    @Autowired
+    RedisRequestCounter redisRequestCounter;
 
 
     public ServiceImpl(StoreRepository storeRepository, CompanyRepository companyRepository, CompanyRepoService companyRepoService, StoreCompanyViewRepoService storeCompanyViewRepoService, PlanRepository planRepository, SubscriptionRepository subscriptionRepository, SubscriptionViewRepository subscriptionViewRepository, SubscriptionViewRepoService subscriptionViewRepoService, RequestResponseLogRepoService requestResponseLogRepoService, RequestResponseLogRepository requestResponseLogRepository, JwtService jwtService, ModelMapper modelMapper) {
@@ -77,6 +92,7 @@ public class ServiceImpl implements Services {
         companyRepository.save(company);
         return companyRepository.findAll();
     }
+
 
     @Override
     public List<StoreCompanyView> findNearStoreService(DistanceDto distanceDto) {
@@ -129,28 +145,51 @@ public class ServiceImpl implements Services {
     }
 
     @Override
-    public boolean isSubscribed(String jwt) {
-        Object subscriptionId = jwtService.extractAllClaims(jwt).get("subscription");
-        if (subscriptionId == null) return false;
-        Optional<SubscriptionView> subscriptionView = subscriptionViewRepoService.findBySubscriptionIdAndExpiryDateAfter(subscriptionId.toString(), LocalDate.now());
-        if (subscriptionView.isEmpty()) throw new BadRequestException("subscriptionId is not valid");
-        Long totalRequest = subscriptionView.get().getTotalRequest();
-        if (requestResponseLogRepoService.findTopBySubscriptionId(subscriptionId.toString()).isEmpty() || totalRequest == null || (subscriptionView.get().getPlanType().equalsIgnoreCase("limited") && Long.parseLong("" + redisTemplate.opsForValue().get(subscriptionId.toString())) < totalRequest) || (subscriptionView.get().getPlanType().equalsIgnoreCase("limited request per day") && Long.parseLong("" + redisTemplate.opsForValue().get(subscriptionId.toString() + LocalDate.now())) < totalRequest))
-            return true;
-        return false;
+    public String isSubscribed(String apiKey) {
+        byte[] decodeKey = Base64.getDecoder().decode(apiKey.getBytes(StandardCharsets.ISO_8859_1));
+        byte[] pkcs8EncodedBytes = Base64.getDecoder().decode(privatekey);
+        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(pkcs8EncodedBytes);
+        try {
+            KeyFactory kf = KeyFactory.getInstance("RSA");
+            PrivateKey privateKey = kf.generatePrivate(keySpec);
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.DECRYPT_MODE, privateKey);
+            String[] decodedCipherKey = new String(cipher.doFinal(decodeKey)).split("_");
+            String subscriptionId = decodedCipherKey[0];
+            System.out.println(subscriptionId+"  id");
+            System.out.println(decodedCipherKey[1]+"  id");
+            DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy");
+            Date date = formatter.parse(decodedCipherKey[1]);
+            if (subscriptionId == null) return null;
+            Optional<SubscriptionView> subscriptionView = subscriptionViewRepoService.findBySubscriptionIdAndExpiryDateAfter(subscriptionId.toString(), LocalDate.now());
+            if (subscriptionView.isEmpty() || date.before(new Date()))
+                throw new BadRequestException("subscriptionId or apikey expired");
+            Long totalRequest = subscriptionView.get().getTotalRequest();
+            if (requestResponseLogRepoService.findTopBySubscriptionId(subscriptionId).isEmpty() || totalRequest == null
+                    || (subscriptionView.get().getPlanType().equalsIgnoreCase("limited")
+                    && redisRequestCounter.getValue(subscriptionId) < totalRequest)
+                    || (subscriptionView.get().getPlanType().equalsIgnoreCase("limited request per day")
+                    && (redisRequestCounter.getValue(subscriptionId + LocalDate.now()) == null || redisRequestCounter.getValue(subscriptionId.toString() + LocalDate.now()) < totalRequest)))
+                return subscriptionId;
+            return null;
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeySpecException | BadPaddingException |
+                 InvalidKeyException | IllegalBlockSizeException | ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public void saveRequestResponse(ContentCachingRequestWrapper requestWrapper, HttpServletRequest request, ContentCachingResponseWrapper responseWrapper, HttpServletResponse response, String jwt) {
-        String subscriptionId = jwtService.extractAllClaims(jwt).get("subscription").toString();
+    public void saveRequestResponse(ContentCachingRequestWrapper requestWrapper, HttpServletRequest request, ContentCachingResponseWrapper responseWrapper, HttpServletResponse response, String subscriptionId) {
         if (subscriptionViewRepoService.findBySubscriptionId(subscriptionId).getPlanType().equalsIgnoreCase("limited request per day")) {
-            if (redisTemplate.hasKey(subscriptionId + LocalDate.now()) == null)
-                redisTemplate.opsForValue().set(subscriptionId + LocalDate.now(), Long.parseLong("1"));
-            else redisTemplate.opsForValue().increment(subscriptionId + LocalDate.now(), 1);
+            if (redisRequestCounter.hasKey(subscriptionId + LocalDate.now()))
+                redisRequestCounter.incrementValue(subscriptionId + LocalDate.now());
+            else
+                redisRequestCounter.setData(subscriptionId + LocalDate.now(), Long.parseLong("1"));
         } else {
-            if (redisTemplate.hasKey(subscriptionId) == null)
-                redisTemplate.opsForValue().set(subscriptionId, Long.parseLong("1"));
-            else redisTemplate.opsForValue().increment(subscriptionId, 1);
+            if (redisRequestCounter.hasKey(subscriptionId))
+                redisRequestCounter.incrementValue(subscriptionId);
+            else
+                redisRequestCounter.setData(subscriptionId, Long.parseLong("1"));
         }
         RequestResponseLog requestResponseLog = new RequestResponseLog();
         try {
@@ -172,6 +211,47 @@ public class ServiceImpl implements Services {
 
     @Override
     public Optional<Company> findCompany(String username) {
+
         return companyRepoService.findByCompanyName(username);
     }
+
+    @Override
+    public String generateApi(HttpServletRequest request) {
+        String publickey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCJ7+ov4Piiqf2PrvsMaeiehJPzvqb3cAkhYg1f5OU7gsDn+m4+MLJe/T1QUVAk3eVyxPzJ0lcqs+2mmlEqOe/tM0BHcNutjZgnoopIuqbwSMGlu0INyKMhHMt7+2Hvuz+mVkkv9Brh/LlW8G+6UpAkf26f1exxCAzH0dOz7NVEuwIDAQAB";
+        byte[] encodedPb = Base64.getDecoder().decode(publickey.getBytes());
+        X509EncodedKeySpec keySpecPb = new X509EncodedKeySpec(encodedPb);
+        try {
+            KeyFactory kf = KeyFactory.getInstance("RSA");
+            PublicKey publicKey = kf.generatePublic(keySpecPb);
+            String token = request.getHeader("Authorization");
+            if (token == null)
+                throw new BadRequestException("not Authorized");
+            token = token.substring(7);
+            if (jwtService.extractAllClaims(token).get("subscription") == null)
+                throw new BadRequestException("not subscribed");
+            byte[] subscriptionId = (jwtService.extractAllClaims(token).get("subscription").toString() + "_" + jwtService.extractAllClaims(token).getExpiration()).getBytes();
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+            subscriptionId = cipher.doFinal(subscriptionId);
+
+//            String ss=Base64.getEncoder().encodeToString(subscriptionId);
+//            byte[] decodeKey=Base64.getDecoder().decode(ss.getBytes(StandardCharsets.ISO_8859_1));
+//            byte [] pkcs8EncodedBytes = Base64.getDecoder().decode(privatekey);
+////            System.out.println(new String(subscriptionId)+"  dekey");
+//            PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(pkcs8EncodedBytes);
+//            PrivateKey privateKey = kf.generatePrivate(keySpec);
+//             cipher=Cipher.getInstance("RSA");
+//            cipher.init(Cipher.DECRYPT_MODE, privateKey);
+//            String[] decodedCipherKey = new String(cipher.doFinal(decodeKey)).split("_");
+//            String subscription=decodedCipherKey[0];
+//            System.out.println(subscription+"  1234");
+//            System.out.println(decodedCipherKey[1]+"  date");
+            return Base64.getEncoder().encodeToString(subscriptionId);
+
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException |
+                 InvalidKeySpecException | BadPaddingException | InvalidKeyException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
+
