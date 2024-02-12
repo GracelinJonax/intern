@@ -1,5 +1,6 @@
 package Main;
 
+import Objects.Boots;
 import Objects.Chest;
 import Objects.Door;
 import Objects.Key;
@@ -37,5 +38,9 @@ public class AssetSetter {
         gamePanel.object[6]=new Chest();
         gamePanel.object[6].worldX=10*gamePanel.titleSize;
         gamePanel.object[6].worldY=8*gamePanel.titleSize;
+
+        gamePanel.object[7]=new Boots();
+        gamePanel.object[7].worldX=37*gamePanel.titleSize;
+        gamePanel.object[7].worldY=42*gamePanel.titleSize;
     }
 }

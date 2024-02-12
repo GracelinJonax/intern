@@ -13,14 +13,16 @@ public class Player extends Character {
     KeyHandler keyHandler;
     public final int screenX;
     public final int screenY;
+    public int hasKeys=0;
+
     public Player(GamePanel gamePanel, KeyHandler keyHandler) {
         this.gamePanel = gamePanel;
         this.keyHandler = keyHandler;
         screenX= gamePanel.screenWidth/2-(gamePanel.titleSize/2);
         screenY= gamePanel.screenHeight/2-(gamePanel.titleSize/2);
         solidArea=new Rectangle(8,16,32,32);
-        saDefaultX=8;
-        saDefaultY=16;
+        saDefaultX= solidArea.x;
+        saDefaultY= solidArea.y;
         setDefaultValues();
         getPlayerImage();
     }
@@ -31,7 +33,6 @@ public class Player extends Character {
         speed = 4;
         direction = "right";
     }
-
     public void update() {
         if(keyHandler.up == true||keyHandler.down == true||keyHandler.left == true||keyHandler.right == true){
         if (keyHandler.up == true) {
@@ -45,6 +46,9 @@ public class Player extends Character {
         }
         collisionOn=false;
         gamePanel.checker.checkTile(this);
+        int objIndex=gamePanel.checker.checkObject(this,true);
+        pickUpObject(objIndex);
+
         if(collisionOn==false){
             switch (direction){
                 case "up":
@@ -70,6 +74,41 @@ public class Player extends Character {
 
             spriteCounter=0;
         }}
+    }
+
+    public void pickUpObject(int index){
+        if (index!=-1){
+            String objectName=gamePanel.object[index].name;
+            switch (objectName){
+                case "key":
+                    gamePanel.playSE(1);
+                    hasKeys++;
+                    gamePanel.object[index]=null;
+                    gamePanel.ui.showMessage("key obtained!");
+                    break;
+                case "door":
+                    if (hasKeys>0){
+                        gamePanel.playSE(3);
+                        gamePanel.object[index]=null;
+                        gamePanel.ui.showMessage("door opened!");
+                        hasKeys--;
+                    }
+                    else
+                        gamePanel.ui.showMessage("get a key first");
+                    break;
+                case "boots":
+                    gamePanel.playSE(2);
+                    speed+=2;
+                    gamePanel.object[index]=null;
+                    gamePanel.ui.showMessage("speed increased");
+                    break;
+                case "chest":
+                    gamePanel.ui.gameFinished=true;
+                    gamePanel.stopMusic();
+                    gamePanel.playSE(4);
+                    break;
+            }
+        }
     }
 
     public void draw(Graphics2D g2) {

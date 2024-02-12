@@ -1,6 +1,5 @@
 package Objects;
 
-import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
 import java.io.IOException;
 
@@ -12,6 +11,5 @@ public class Key extends Object{
         }catch (IOException e){
             e.printStackTrace();
         }
-
     }
 }
