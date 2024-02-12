@@ -13,63 +13,103 @@ public class Player extends Character {
     KeyHandler keyHandler;
     public final int screenX;
     public final int screenY;
+    public int hasKeys = 0;
+
     public Player(GamePanel gamePanel, KeyHandler keyHandler) {
         this.gamePanel = gamePanel;
         this.keyHandler = keyHandler;
-        screenX= gamePanel.screenWidth/2-(gamePanel.titleSize/2);
-        screenY= gamePanel.screenHeight/2-(gamePanel.titleSize/2);
-        solidArea=new Rectangle(8,16,32,32);
-        saDefaultX=8;
-        saDefaultY=16;
+        screenX = gamePanel.screenWidth / 2 - (gamePanel.titleSize / 2);
+        screenY = gamePanel.screenHeight / 2 - (gamePanel.titleSize / 2);
+        solidArea = new Rectangle(8, 16, 32, 32);
+        saDefaultX = solidArea.x;
+        saDefaultY = solidArea.y;
         setDefaultValues();
         getPlayerImage();
     }
 
     public void setDefaultValues() {
-        worldX = gamePanel.titleSize*23;
-        worldY = gamePanel.titleSize*21;
+        worldX = gamePanel.titleSize * 23;
+        worldY = gamePanel.titleSize * 21;
         speed = 4;
         direction = "right";
     }
 
     public void update() {
-        if(keyHandler.up == true||keyHandler.down == true||keyHandler.left == true||keyHandler.right == true){
-        if (keyHandler.up == true) {
-            direction = "up";
-        } else if (keyHandler.down == true) {
-            direction = "down";
-        } else if (keyHandler.left == true) {
-            direction = "left";
-        } else if (keyHandler.right == true) {
-            direction = "right";
+        if (keyHandler.up == true || keyHandler.down == true || keyHandler.left == true || keyHandler.right == true) {
+            if (keyHandler.up == true) {
+                direction = "up";
+            } else if (keyHandler.down == true) {
+                direction = "down";
+            } else if (keyHandler.left == true) {
+                direction = "left";
+            } else if (keyHandler.right == true) {
+                direction = "right";
+            }
+            collisionOn = false;
+            gamePanel.checker.checkTile(this);
+            int objIndex = gamePanel.checker.checkObject(this, true);
+            pickUpObject(objIndex);
+
+            if (collisionOn == false) {
+                switch (direction) {
+                    case "up":
+                        worldY -= speed;
+                        break;
+                    case "down":
+                        worldY += speed;
+                        break;
+                    case "left":
+                        worldX -= speed;
+                        break;
+                    case "right":
+                        worldX += speed;
+                        break;
+                }
+            }
+            spriteCounter++;
+            if (spriteCounter > 12) {
+                if (spriteNo == 1)
+                    spriteNo = 2;
+                else if (spriteNo == 2)
+                    spriteNo = 1;
+
+                spriteCounter = 0;
+            }
         }
-        collisionOn=false;
-        gamePanel.checker.checkTile(this);
-        if(collisionOn==false){
-            switch (direction){
-                case "up":
-                    worldY -= speed;
+    }
+
+    public void pickUpObject(int index) {
+        if (index != -1) {
+            String objectName = gamePanel.object[index].name;
+            switch (objectName) {
+                case "key":
+                    gamePanel.playSE(1);
+                    hasKeys++;
+                    gamePanel.object[index] = null;
+                    gamePanel.ui.showMessage("key obtained!");
                     break;
-                case "down":
-                    worldY += speed;
+                case "door":
+                    if (hasKeys > 0) {
+                        gamePanel.playSE(3);
+                        gamePanel.object[index] = null;
+                        gamePanel.ui.showMessage("door opened!");
+                        hasKeys--;
+                    } else
+                        gamePanel.ui.showMessage("get a key first");
                     break;
-                case "left":
-                    worldX -= speed;
+                case "boots":
+                    gamePanel.playSE(2);
+                    speed += 2;
+                    gamePanel.object[index] = null;
+                    gamePanel.ui.showMessage("speed increased");
                     break;
-                case "right":
-                    worldX += speed;
+                case "chest":
+                    gamePanel.ui.gameFinished = true;
+                    gamePanel.stopMusic();
+                    gamePanel.playSE(4);
                     break;
             }
         }
-        spriteCounter++;
-        if (spriteCounter>12){
-            if (spriteNo==1)
-                spriteNo=2;
-            else if (spriteNo == 2)
-                spriteNo=1;
-
-            spriteCounter=0;
-        }}
     }
 
     public void draw(Graphics2D g2) {

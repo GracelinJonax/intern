@@ -24,6 +24,6 @@ public interface sample {
     public ResponseEntity<String> updateGrocery(@RequestBody  GroceryItem gi);
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteGrocery(@PathVariable String id);
-    @PostMapping("/price")
-    ResponseEntity<Price> savePricee(@RequestBody Price price);
+//    @PostMapping("/price")
+//    ResponseEntity<Price> savePricee(@RequestBody Price price);
 }

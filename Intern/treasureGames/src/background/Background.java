@@ -56,18 +56,18 @@ public class Background {
 
             tiles[1] = new Tile();
             tiles[1].image = ImageIO.read(getClass().getResourceAsStream("/tiles/wall.png"));
-            tiles[1].collision=true;
+            tiles[1].collision = true;
 
             tiles[2] = new Tile();
             tiles[2].image = ImageIO.read(getClass().getResourceAsStream("/tiles/water.png"));
-            tiles[2].collision=true;
+            tiles[2].collision = true;
 
             tiles[3] = new Tile();
             tiles[3].image = ImageIO.read(getClass().getResourceAsStream("/tiles/earth.png"));
 
             tiles[4] = new Tile();
             tiles[4].image = ImageIO.read(getClass().getResourceAsStream("/tiles/tree.png"));
-            tiles[4].collision=true;
+            tiles[4].collision = true;
 
             tiles[5] = new Tile();
             tiles[5].image = ImageIO.read(getClass().getResourceAsStream("/tiles/sand.png"));
@@ -86,9 +86,9 @@ public class Background {
                 int screenY = worldY - gamePanel.player.worldY + gamePanel.player.screenY;
                 int titleNo = map[i][j];
                 if (worldX + gamePanel.titleSize > gamePanel.player.worldX - gamePanel.player.screenX &&
-                    worldX - gamePanel.titleSize < gamePanel.player.worldX + gamePanel.player.screenX &&
-                    worldY + gamePanel.titleSize > gamePanel.player.worldY - gamePanel.player.screenY &&
-                    worldY - gamePanel.titleSize < gamePanel.player.worldY + gamePanel.player.screenY)
+                        worldX - gamePanel.titleSize < gamePanel.player.worldX + gamePanel.player.screenX &&
+                        worldY + gamePanel.titleSize > gamePanel.player.worldY - gamePanel.player.screenY &&
+                        worldY - gamePanel.titleSize < gamePanel.player.worldY + gamePanel.player.screenY)
                     g2.drawImage(tiles[titleNo].image, screenX, screenY, gamePanel.titleSize, gamePanel.titleSize, null);
             }
         }
