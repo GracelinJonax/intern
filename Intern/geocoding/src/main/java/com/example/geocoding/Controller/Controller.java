@@ -1,23 +1,14 @@
 package com.example.geocoding.Controller;
 
 import com.example.geocoding.Api.Api;
-import com.example.geocoding.Config.JwtService;
 import com.example.geocoding.Dto.*;
-import com.example.geocoding.Exception.BadRequestException;
 import com.example.geocoding.Model.*;
-import com.example.geocoding.Repository.CompanyRepository;
-import com.example.geocoding.Repository.Service.CompanyRepoService;
 import com.example.geocoding.Service.Services;
-import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
 import java.util.List;
 
 @RestController

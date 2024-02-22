@@ -12,6 +12,9 @@ import com.example.geocoding.Repository.Service.SubscriptionViewRepoService;
 import com.example.geocoding.Service.Services;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.bson.json.JsonObject;
+import org.bson.*;
+import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,6 +133,7 @@ public class ServiceImpl implements Services {
 
     @Override
     public String loginService(LoginDto loginDto) {
+        System.out.println(subscriptionViewRepository.findByCompanyId("Bosch"));
         String token;
         HashMap<String, Object> claims = new HashMap<>();
         Optional<Company> company = companyRepoService.findByCompanyName(loginDto.getCompanyName());
@@ -138,7 +142,6 @@ public class ServiceImpl implements Services {
             SubscriptionView subscriptionView = subscriptionViewRepoService.findByCompanyIdAndExpiryDateAfter(company.get().getCompanyId(), LocalDate.now());
             if (subscriptionView == null) claims.put("subscription", null);
             else claims.put("subscription", subscriptionView.getSubscriptionId());
-
             token = jwtService.generateToken(claims, company.get());
             return token;
         } else throw new BadRequestException("password incorrect");
@@ -147,21 +150,24 @@ public class ServiceImpl implements Services {
     @Override
     public String isSubscribed(String apiKey) {
         byte[] decodeKey = Base64.getDecoder().decode(apiKey.getBytes(StandardCharsets.ISO_8859_1));
+
         byte[] pkcs8EncodedBytes = Base64.getDecoder().decode(privatekey);
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(pkcs8EncodedBytes);
         try {
             KeyFactory kf = KeyFactory.getInstance("RSA");
             PrivateKey privateKey = kf.generatePrivate(keySpec);
+            
             Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
             String[] decodedCipherKey = new String(cipher.doFinal(decodeKey)).split("_");
+
             String subscriptionId = decodedCipherKey[0];
-            System.out.println(subscriptionId+"  id");
-            System.out.println(decodedCipherKey[1]+"  id");
+            System.out.println(subscriptionId + "  id");
+            System.out.println(decodedCipherKey[1] + "  id");
             DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy");
             Date date = formatter.parse(decodedCipherKey[1]);
             if (subscriptionId == null) return null;
-            Optional<SubscriptionView> subscriptionView = subscriptionViewRepoService.findBySubscriptionIdAndExpiryDateAfter(subscriptionId.toString(), LocalDate.now());
+            Optional<SubscriptionView> subscriptionView = subscriptionViewRepoService.findBySubscriptionIdAndExpiryDateAfter(subscriptionId, LocalDate.now());
             if (subscriptionView.isEmpty() || date.before(new Date()))
                 throw new BadRequestException("subscriptionId or apikey expired");
             Long totalRequest = subscriptionView.get().getTotalRequest();
@@ -169,9 +175,11 @@ public class ServiceImpl implements Services {
                     || (subscriptionView.get().getPlanType().equalsIgnoreCase("limited")
                     && redisRequestCounter.getValue(subscriptionId) < totalRequest)
                     || (subscriptionView.get().getPlanType().equalsIgnoreCase("limited request per day")
-                    && (redisRequestCounter.getValue(subscriptionId + LocalDate.now()) == null || redisRequestCounter.getValue(subscriptionId.toString() + LocalDate.now()) < totalRequest)))
+                    && (redisRequestCounter.getValue(subscriptionId + LocalDate.now()) == null
+                    || redisRequestCounter.getValue(subscriptionId + LocalDate.now()) < totalRequest)))
                 return subscriptionId;
             return null;
+
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeySpecException | BadPaddingException |
                  InvalidKeyException | IllegalBlockSizeException | ParseException e) {
             throw new RuntimeException(e);
@@ -195,7 +203,9 @@ public class ServiceImpl implements Services {
         try {
             String requestBody = new String(requestWrapper.getContentAsByteArray(), request.getCharacterEncoding());
             String responseBody = new String(responseWrapper.getContentAsByteArray(), response.getCharacterEncoding());
-
+//            System.out.println(requestBody+"         request");
+//            JSONObject json=new JSONObject(requestBody);
+//            System.out.println(json.get("companyId")+"              hiiiiii");
             requestResponseLog.setSubscriptionId(subscriptionId);
             requestResponseLog.setRequestMethod(request.getMethod());
             requestResponseLog.setRequestUrl(request.getRequestURL().toString());
@@ -233,7 +243,7 @@ public class ServiceImpl implements Services {
             Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
             subscriptionId = cipher.doFinal(subscriptionId);
-
+            System.out.println(subscriptionId.toString()+"        1111111111111");
 //            String ss=Base64.getEncoder().encodeToString(subscriptionId);
 //            byte[] decodeKey=Base64.getDecoder().decode(ss.getBytes(StandardCharsets.ISO_8859_1));
 //            byte [] pkcs8EncodedBytes = Base64.getDecoder().decode(privatekey);
@@ -247,6 +257,7 @@ public class ServiceImpl implements Services {
 //            System.out.println(subscription+"  1234");
 //            System.out.println(decodedCipherKey[1]+"  date");
             return Base64.getEncoder().encodeToString(subscriptionId);
+//            return subscriptionId;
 
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException |
                  InvalidKeySpecException | BadPaddingException | InvalidKeyException e) {

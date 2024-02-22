@@ -15,7 +15,7 @@ public class ExceptionsHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<HashMap<String, String>> validationException(MethodArgumentNotValidException exception) {
         HashMap<String, String> error = new HashMap<>();
-        exception.getBindingResult().getAllErrors().forEach(a -> error.put(((FieldError) a).getField(), a.getDefaultMessage()));
+        exception.getBindingResult().getAllErrors().forEach(a ->error.put(((FieldError) a).getField(), a.getDefaultMessage()));
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }

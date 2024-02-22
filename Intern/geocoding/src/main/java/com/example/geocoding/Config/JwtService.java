@@ -11,14 +11,13 @@ import org.springframework.stereotype.Service;
 import java.security.Key;
 import java.util.Date;
 import java.util.Map;
-import java.util.function.Function;
+//import java.util.function.Function;
 
 @Service
 public class JwtService {
-    private final String secretKey = "3daFnXKKgcTTZH1BX0hsEO1m+TgDIrgzDBA22CFUvjAkld3IQPdbonaBC+tfD4Pq";
+    String secretKey = "3daFnXKKgcTTZH1BX0hsEO1m+TgDIrgzDBA22CFUvjAkld3IQPdbonaBC+tfD4Pq";
 
     public String generateToken(Map<String, Object> claims, Company company) {
-        System.out.println("i am in");
         return Jwts.builder().claims(claims).subject(company.getCompanyName()).issuedAt(new Date(System.currentTimeMillis())).expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)).signWith(getSignInKey(), SignatureAlgorithm.HS256).compact();
     }
 
@@ -27,13 +26,13 @@ public class JwtService {
 //        return extractClaim(token,Claims::getSubject);
     }
 
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
-    }
+//    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+//        final Claims claims = extractAllClaims(token);
+//        return claimsResolver.apply(claims);
+//    }
 
     public Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(getSignInKey()).build().parseClaimsJws(token).getPayload();
+        return Jwts.parser().setSigningKey(getSignInKey()).build().parseSignedClaims(token).getPayload();
     }
 
     private Key getSignInKey() {
