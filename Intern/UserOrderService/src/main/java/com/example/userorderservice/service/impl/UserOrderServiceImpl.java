@@ -1,17 +1,14 @@
 package com.example.userorderservice.service.impl;
 
+import com.example.userorderservice.Dto.LoginDto;
 import com.example.userorderservice.Dto.OrderBillDto;
 import com.example.userorderservice.Dto.OrderDto;
 import com.example.userorderservice.feign.ProxyFeign;
-import com.example.userorderservice.model.OrderDetails;
-import com.example.userorderservice.model.OrderedProductDetails;
-import com.example.userorderservice.model.ProductDetails;
-import com.example.userorderservice.model.UserDetails;
-import com.example.userorderservice.repository.OrderDetailsRepository;
-import com.example.userorderservice.repository.OrderedProductDetailsRepository;
-import com.example.userorderservice.repository.ProductDetailsRepository;
-import com.example.userorderservice.repository.UserDetailsRepository;
-import com.example.userorderservice.service.userOrderService;
+import com.example.userorderservice.model.*;
+import com.example.userorderservice.repository.*;
+import com.example.userorderservice.repository.service.TenantDetailsRepositoryService;
+import com.example.userorderservice.repository.service.UserDetailsRepositoryService;
+import com.example.userorderservice.service.UserOrderService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -20,19 +17,25 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class userOrderServiceImpl implements userOrderService {
+public class UserOrderServiceImpl implements UserOrderService {
     private final UserDetailsRepository userDetailsRepository;
+    private final TenantDetailsRepository tenantDetailsRepository;
+    private final TenantDetailsRepositoryService tenantDetailsRepositoryService;
+    private final UserDetailsRepositoryService userDetailsRepositoryService;
     private final ProductDetailsRepository productDetailsRepository;
     private final OrderDetailsRepository orderDetailsRepository;
     private final OrderedProductDetailsRepository orderedProductDetailsRepository;
     private final ProxyFeign ProxyFeign;
     private final ModelMapper modelMapper;
 
-    public userOrderServiceImpl(UserDetailsRepository userDetailsRepository,
+    public UserOrderServiceImpl(UserDetailsRepository userDetailsRepository, TenantDetailsRepository tenantDetailsRepository, TenantDetailsRepositoryService tenantDetailsRepositoryService, UserDetailsRepositoryService userDetailsRepositoryService,
                                 ProductDetailsRepository productDetailsRepository, OrderDetailsRepository orderDetailsRepository,
                                 OrderedProductDetailsRepository orderedProductDetailsRepository,
-                                ProxyFeign ProxyFeign,ModelMapper modelMapper) {
+                                ProxyFeign ProxyFeign, ModelMapper modelMapper) {
         this.userDetailsRepository = userDetailsRepository;
+        this.tenantDetailsRepository = tenantDetailsRepository;
+        this.tenantDetailsRepositoryService = tenantDetailsRepositoryService;
+        this.userDetailsRepositoryService = userDetailsRepositoryService;
         this.productDetailsRepository = productDetailsRepository;
         this.orderDetailsRepository = orderDetailsRepository;
         this.orderedProductDetailsRepository = orderedProductDetailsRepository;
@@ -48,6 +51,8 @@ public class userOrderServiceImpl implements userOrderService {
             return "username is too long";
         else if (!userDetails.getEmail().contains("@"))
             return "user email is invalid";
+        else if (userDetails.getPassword().isEmpty()||userDetails.getPassword().length()<8)
+            return "user password is invalid";
         userDetailsRepository.save(userDetails);
         return "success";
     }
@@ -71,11 +76,11 @@ public class userOrderServiceImpl implements userOrderService {
         OrderBillDto bill = new OrderBillDto();
         OrderDetails orderDetails = new OrderDetails();
         Optional<UserDetails> userDetails = userDetailsRepository.findById(orderDto.getUserId());
+        if (userDetails.isEmpty())
+            throw new RuntimeException("user not present");
         orderDetails.setUserDetails(userDetails.get());
-//        OrderDetails orderDetails1 = orderDetailsRepository.save(orderDetails);
-        bill.setUserId(userDetails.get().getUserId());
+        bill.setUserId(orderDto.getUserId());
         bill.setUserEmail(userDetails.get().getEmail());
-        //
         bill.setOrderId(orderDetails.getOrderId());
         List<OrderBillDto.Product> billProductList = new ArrayList<>();
         List<OrderedProductDetails> orderedProductDetailsList=new ArrayList<>();
@@ -86,6 +91,8 @@ public class userOrderServiceImpl implements userOrderService {
             modelMapper.map(productOrdered, orderedProductDetails);
             orderedProductDetails.setOrderDetails(orderDetails);
             Optional<ProductDetails> productDetails = productDetailsRepository.findById(productOrdered.getProductId());
+            if (productDetails.isEmpty())
+                throw new RuntimeException("product not present");
             ProductDetails productDetail = productDetails.get();
             modelMapper.map(productDetail, billProduct);
             billProduct.setQuantity(productOrdered.getQuantity());
@@ -107,15 +114,40 @@ public class userOrderServiceImpl implements userOrderService {
         return id;
     }
 
-    //    @Override
-    //    public void sendEmailService(orderBillDto bill) {
-    //        String message="<head>"+"</head>"+"<body>"+"<table border =1>"+"<tr>"+"<th>Product Name</th>"+"<th>Quantity</th>"+"<th>Gst</th>"+"<th>Price</th>";
-    //        for(orderBillDto.Product product:bill.getProducts()){
-    //            ProductDetails productDetails=productDetailsRepository.findById(product.getProductId()).get();
-    //            message+="<tr>"+"<td>"+productDetails.getName()+"</td>"+"<td>"+product.getQuantity()+"</td>"+"<td>"+product.getGst()+"</td>"+"<td>"+product.getPrice()+"</td>"+"</tr>";
-    //        }
-    //        message+="</table>"+"Total Price       "+bill.getTotalPrice()+"</body>"+"</html>";
-    //        String email=userDetailsRepository.findById(bill.getUserId()).get().getEmail();
-    //        emailService.sendEmail(email,"Your Order is Confirmed",message);
-    //    }
+    @Override
+    public boolean isTenantValid(String tenantId) {
+        Optional<TenantDetails> tenant=tenantDetailsRepository.findById(tenantId);
+        if (tenant.isEmpty())
+            return false;
+        else
+            return true;
+    }
+
+    @Override
+    public String loginTenantService(LoginDto loginDto) {
+        TenantDetails tenant=tenantDetailsRepositoryService.findByEmail(loginDto.getEmail());
+        if(tenant!=null&&tenant.getPassword().equals(loginDto.getPassword()))
+            return tenant.getTenantId();
+        throw new RuntimeException("tenant invalid");
+    }
+
+    @Override
+    public String loginUserService(LoginDto loginDto) {
+        UserDetails userDetails=userDetailsRepositoryService.findByEmail(loginDto.getEmail());
+        if(userDetails!=null&&userDetails.getPassword().equals(loginDto.getPassword()))
+            return "login successful";
+        throw new RuntimeException("login unsuccessful");
+    }
+
+    @Override
+    public String saveTenantService(TenantDetails tenantDetails) {
+        if(tenantDetails==null)
+            return "tenant is null";
+        else if (!tenantDetails.getEmail().contains("@"))
+            return "tenant email is invalid";
+        else if (tenantDetails.getPassword().isEmpty()||tenantDetails.getPassword().length()<8)
+            return "tenant password is invalid";
+        tenantDetailsRepository.save(tenantDetails);
+        return "success";
+    }
 }

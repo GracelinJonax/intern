@@ -17,9 +17,9 @@ public class OrderDetails {
 //    @GenericGenerator(name = "system-uuid", strategy = "uuid")
     @UuidGenerator
     private String orderId;
-    @ManyToOne
-    @JoinColumn(name = ApplicationConstants.userForeignKey)
-    UserDetails userDetails;
+        @ManyToOne
+        @JoinColumn(name = ApplicationConstants.userForeignKey)
+        UserDetails userDetails;
     private Double totalPrice;
     private String billId;
 }
