@@ -1,8 +1,7 @@
 package com.example.seatingarrangement.model;
 
-import jakarta.persistence.GeneratedValue;
 import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -14,8 +13,7 @@ import java.util.Date;
 @Data
 public class DefaultLayout {
     @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(strategy = "syatem-uuid",name = "uuid")
+    @UuidGenerator
     private String id;
     private int[][] defaultLayout;
     private String[][] layout;

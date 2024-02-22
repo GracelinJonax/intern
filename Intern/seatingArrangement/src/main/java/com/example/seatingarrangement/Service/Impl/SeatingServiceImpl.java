@@ -10,23 +10,16 @@ import com.example.seatingarrangement.repository.TeamRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
-
-import static org.hibernate.query.sqm.tree.SqmNode.log;
 
 @Service
 public class SeatingServiceImpl implements SeatingService {
     static TreeSet<Integer> clusters = new TreeSet<>();
-    static String arrangement[][];
-    static int tempLayout[][];
-    static int totalSeating[][];
-    static boolean track[][];
+    static String[][] arrangement;
+    static int[][] tempLayout;
+    static int[][] totalSeating;
+    static boolean[][] track;
     static int lastx = -1;
     static int lasty = -1;
     static int count = 0;
@@ -51,7 +44,7 @@ public class SeatingServiceImpl implements SeatingService {
     @Override
     public DefaultLayout saveLayoutService(DefaultLayout defaultLayout) {
         int count=0;
-        String layout[][]=new String[defaultLayout.getDefaultLayout().length][defaultLayout.getDefaultLayout()[0].length];
+        String[][] layout =new String[defaultLayout.getDefaultLayout().length][defaultLayout.getDefaultLayout()[0].length];
         for(int i=0;i<defaultLayout.getDefaultLayout().length;i++){
             for(int j=0;j<defaultLayout.getDefaultLayout()[0].length;j++){
 //                layout[i][j]="";
@@ -95,7 +88,7 @@ public class SeatingServiceImpl implements SeatingService {
 //    teamList=new HashSet<>(teamList).stream().toList();
 //        System.out.println(teamList);
         DefaultLayout defaultLayoutClass = defaultLayoutRepository.findAll().get(0);
-        int defaultLayout[][] = defaultLayoutClass.getDefaultLayout();
+        int[][] defaultLayout = defaultLayoutClass.getDefaultLayout();
         arrangement = new String[defaultLayout.length][defaultLayout[0].length];
         findArrangement(teamList);
         SeatingDto seatingDto = new SeatingDto();
@@ -221,8 +214,8 @@ public class SeatingServiceImpl implements SeatingService {
             return false;
         if (x > 0 && y > 0 && x <= arrangement.length && y <= arrangement[0].length&&trace[x-1][y-1]==0) {
             trace[x-1][y-1]=1;
-            if ((track[x - 1][y - 1] == true &&arrangement[x - 1][y - 1].contains(
-                    teamCode)) || (track[x - 1][y - 1] == false && totalSeating[x][y] == 0))
+            if ((track[x - 1][y - 1] &&arrangement[x - 1][y - 1].contains(
+                    teamCode)) || (!track[x - 1][y - 1] && totalSeating[x][y] == 0))
                 steps -= 1;
             if(tempLayout[x-1][y-1]==-1)
                 steps+=2;
@@ -235,30 +228,8 @@ public class SeatingServiceImpl implements SeatingService {
             if (findSteps(x, y-1, resultx, resulty, steps+1, teamCode))
                 return true;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //            if (findSteps(x, y-1, resultx, resulty, steps+1, teamCode))
 //                return true;
-
-
-
-
-
-
 //            trace[x-1][y-1]=0;
 //            if ((track[x - 1][y - 1] == true && !arrangement[x - 1][y - 1].contains(
 //                    teamCode)) || (track[x - 1][y - 1] == false && totalSeating[x][y] != 0))
@@ -273,17 +244,17 @@ public class SeatingServiceImpl implements SeatingService {
         if (count == totalMembers) {
             return true;
         }
-        if (x > 0 && y > 0 && x <= arrangement.length && y <= arrangement[0].length && totalSeating[x][y] != 0 && track[x - 1][y - 1] == false && arrangement[x - 1][y - 1] == null) {
+        if (x > 0 && y > 0 && x <= arrangement.length && y <= arrangement[0].length && totalSeating[x][y] != 0 && !track[x - 1][y - 1] && arrangement[x - 1][y - 1] == null) {
             tempLayout[x - 1][y - 1] = 0;
             track[x - 1][y - 1] = true;
-            arrangement[x - 1][y - 1] = "" + teamCode + (++count);
-            if (markSeating(x, y - 1, teamCode, totalMembers) == true)
+            arrangement[x - 1][y - 1] = teamCode + (++count);
+            if (markSeating(x, y - 1, teamCode, totalMembers))
                 return true;
-            if (markSeating(x - 1, y, teamCode, totalMembers) == true)
+            if (markSeating(x - 1, y, teamCode, totalMembers))
                 return true;
-            if (markSeating(x, y + 1, teamCode, totalMembers) == true)
+            if (markSeating(x, y + 1, teamCode, totalMembers))
                 return true;
-            if (markSeating(x + 1, y, teamCode, totalMembers) == true)
+            if (markSeating(x + 1, y, teamCode, totalMembers))
                 return true;
             track[x-1][y-1]=false;
             return false;
@@ -293,7 +264,7 @@ public class SeatingServiceImpl implements SeatingService {
 
     private int[][] findTotalSeating(int[][] tempLayout) {
         clusters.clear();
-        int totalSeating[][] = new int[tempLayout.length + 1][tempLayout[0].length + 1];
+        int[][] totalSeating = new int[tempLayout.length + 1][tempLayout[0].length + 1];
         for (int i = 1; i <= tempLayout.length; i++) {
             for (int j = 1; j <= tempLayout[0].length; j++) {
                 if (tempLayout[i - 1][j - 1] == 0||tempLayout[i-1][j-1]==-1)
@@ -311,7 +282,7 @@ public class SeatingServiceImpl implements SeatingService {
     }
 
     private String createTeamCode(int total) {
-        String alph[] = { "", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R",
+        String[] alph = { "", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R",
                 "S", "T", "U", "V", "W", "X", "Y", "Z" };
         String teamCode = "";
         if (total % 26 == 0)

@@ -1,11 +1,9 @@
 package com.example.seatingarrangement.model;
 
-import jakarta.persistence.GeneratedValue;
 import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -15,8 +13,7 @@ import java.util.Date;
 @Data
 public class Team {
     @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(strategy = "system-uuid",name = "uuid")
+    @UuidGenerator
     private String id;
     private String teamName;
     private int totalMembers;
