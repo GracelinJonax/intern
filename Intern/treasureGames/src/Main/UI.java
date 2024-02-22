@@ -58,10 +58,9 @@ public class UI {
             g2.drawString("x  " + gamePanel.player.hasKeys, 74, 65);
             playTime += (double) 1 / 60;
             g2.drawString("Time:   " + decimalFormat.format(playTime), gamePanel.titleSize * 11, 65);
-            if (messageOn == true) {
+            if (messageOn) {
                 g2.setFont(g2.getFont().deriveFont(30F));
                 g2.drawString(message, gamePanel.titleSize / 2, (gamePanel.titleSize * 3) - 30);
-
                 messageCounter++;
                 if (messageCounter > 120) {
                     messageCounter = 0;
