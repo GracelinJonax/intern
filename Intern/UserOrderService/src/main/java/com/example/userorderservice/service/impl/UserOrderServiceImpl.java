@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 @Service
 public class UserOrderServiceImpl implements UserOrderService {
     private final UserDetailsRepository userDetailsRepository;
@@ -42,7 +41,6 @@ public class UserOrderServiceImpl implements UserOrderService {
         this.modelMapper = modelMapper;
         this.ProxyFeign = ProxyFeign;
     }
-
     @Override
     public String saveUserService(UserDetails userDetails) {
         if(userDetails==null)
@@ -55,6 +53,7 @@ public class UserOrderServiceImpl implements UserOrderService {
             return "user password is invalid";
         userDetailsRepository.save(userDetails);
         return "success";
+
     }
 
     @Override
