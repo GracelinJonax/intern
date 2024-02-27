@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: order
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/tenantDb
+#    username: postgres
+#    password: Grace@2002
+#  jpa:
+#    hibernate:
+#      ddl-auto: create
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: gracelinjonax247@gmail.com
+    password: kodo qaqr dsde hrgf
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+#logging:
+#  level:
+#    com:
+#      zaxxer:
+#        hikari: DEBUG
+
+defaultTenant: tenantDb
