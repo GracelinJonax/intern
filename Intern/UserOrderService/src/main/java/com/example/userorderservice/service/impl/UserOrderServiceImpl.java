@@ -26,6 +26,8 @@ public class UserOrderServiceImpl implements UserOrderService {
     private final OrderedProductDetailsRepository orderedProductDetailsRepository;
     private final ProxyFeign ProxyFeign;
     private final ModelMapper modelMapper;
+//    com.example.seatingArrangement.Dto.TeamDto teamDto;
+//    private com.example.seatingArrangement.Dto.TeamDto teamDto1;
 
     public UserOrderServiceImpl(UserDetailsRepository userDetailsRepository, TenantDetailsRepository tenantDetailsRepository, TenantDetailsRepositoryService tenantDetailsRepositoryService, UserDetailsRepositoryService userDetailsRepositoryService,
                                 ProductDetailsRepository productDetailsRepository, OrderDetailsRepository orderDetailsRepository,
@@ -52,6 +54,8 @@ public class UserOrderServiceImpl implements UserOrderService {
         else if (userDetails.getPassword().isEmpty()||userDetails.getPassword().length()<8)
             return "user password is invalid";
         userDetailsRepository.save(userDetails);
+//        teamDto1 = teamDto;
+
         return "success";
 
     }

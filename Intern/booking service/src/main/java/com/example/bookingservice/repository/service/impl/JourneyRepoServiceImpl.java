@@ -1,8 +1,8 @@
-package com.example.bookingservice.Repository.Service.Impl;
+package com.example.bookingservice.repository.service.impl;
 
-import com.example.bookingservice.Model.Journey;
-import com.example.bookingservice.Repository.JourneyRepository;
-import com.example.bookingservice.Repository.Service.JourneyRepoService;
+import com.example.bookingservice.model.Journey;
+import com.example.bookingservice.repository.JourneyRepository;
+import com.example.bookingservice.repository.service.JourneyRepoService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;

@@ -1,14 +1,10 @@
-package com.example.bookingservice.Repository;
+package com.example.bookingservice.repository;
 
-import com.example.bookingservice.Model.BusDetails;
-import com.example.bookingservice.Model.Journey;
-import com.example.bookingservice.Model.Links;
+import com.example.bookingservice.model.Links;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
-public interface LinksRepository extends MongoRepository<Links,String> {
+public interface LinksRepository extends MongoRepository<Links, String> {
     Links getFirstByPublishIsNot(String publish);
 }

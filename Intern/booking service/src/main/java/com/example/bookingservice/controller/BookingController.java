@@ -1,12 +1,12 @@
-package com.example.bookingservice.Controller;
+package com.example.bookingservice.controller;
 
-import com.example.bookingservice.Api.BookingApi;
-import com.example.bookingservice.Dto.*;
-import com.example.bookingservice.Model.BusDetails;
-import com.example.bookingservice.Model.Links;
-import com.example.bookingservice.Model.Offers;
-import com.example.bookingservice.Model.UserDetails;
-import com.example.bookingservice.Service.bookingService;
+import com.example.bookingservice.api.BookingApi;
+import com.example.bookingservice.dto.*;
+import com.example.bookingservice.model.BusDetails;
+import com.example.bookingservice.model.Links;
+import com.example.bookingservice.model.Offers;
+import com.example.bookingservice.model.UserDetails;
+import com.example.bookingservice.service.BookingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,9 +15,9 @@ import java.util.List;
 
 @RestController
 public class BookingController implements BookingApi {
-    private final bookingService bookingService;
+    private final BookingService bookingService;
 
-    public BookingController(bookingService bookingService) {
+    public BookingController(BookingService bookingService) {
         this.bookingService = bookingService;
     }
 
@@ -54,7 +54,7 @@ public class BookingController implements BookingApi {
 
     @Override
     public ResponseEntity<String> cancelBooking(CancelDto cancelDto) {
-        return new ResponseEntity<>(bookingService.cancelBookingSerice(cancelDto), HttpStatus.OK);
+        return new ResponseEntity<>(bookingService.cancelBookingService(cancelDto), HttpStatus.OK);
     }
 
     @Override

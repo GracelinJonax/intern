@@ -65,7 +65,7 @@ public class SeatingServiceImpl implements SeatingService {
         int wantedSpace=0;
         for(TeamDto.Team teamList:teamDto.getTeamList())
             wantedSpace+=teamList.getTotalMembers();
-        int totalSpace=defaultLayoutRepository.findAll().get(0).getTotalSpace();
+        int totalSpace=defaultLayoutRepository.findAll().get(6).getTotalSpace();
         if(wantedSpace>totalSpace){
             System.out.println("no space");
         return new SeatingDto();}
@@ -90,7 +90,7 @@ public class SeatingServiceImpl implements SeatingService {
 //        System.out.println(teamList);
 //    teamList=new HashSet<>(teamList).stream().toList();
 //        System.out.println(teamList);
-        DefaultLayout defaultLayoutClass = defaultLayoutRepository.findAll().get(0);
+        DefaultLayout defaultLayoutClass = defaultLayoutRepository.findAll().get(6);
         int[][] defaultLayout = defaultLayoutClass.getDefaultLayout();
         arrangement = new String[defaultLayout.length][defaultLayout[0].length];
         findArrangement(teamList);
@@ -112,7 +112,7 @@ public class SeatingServiceImpl implements SeatingService {
         return seatingDto;
     }
     private void findArrangement(List<Team> teamList) {
-        tempLayout = defaultLayoutRepository.findAll().get(0).getDefaultLayout();
+        tempLayout = defaultLayoutRepository.findAll().get(6).getDefaultLayout();
         track = new boolean[tempLayout.length][tempLayout[0].length];
         totalSeating = findTotalSeating(tempLayout);
         for(int i=0;i<totalSeating.length;i++){

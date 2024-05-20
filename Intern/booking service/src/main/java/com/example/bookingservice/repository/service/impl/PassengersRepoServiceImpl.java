@@ -1,9 +1,9 @@
-package com.example.bookingservice.Repository.Service.Impl;
+package com.example.bookingservice.repository.service.impl;
 
-import com.example.bookingservice.Model.BookingDetails;
-import com.example.bookingservice.Model.Passengers;
-import com.example.bookingservice.Repository.PassengersRepository;
-import com.example.bookingservice.Repository.Service.PassengersRepoService;
+import com.example.bookingservice.model.BookingDetails;
+import com.example.bookingservice.model.Passengers;
+import com.example.bookingservice.repository.PassengersRepository;
+import com.example.bookingservice.repository.service.PassengersRepoService;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

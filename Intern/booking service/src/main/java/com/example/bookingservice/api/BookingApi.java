@@ -1,10 +1,10 @@
-package com.example.bookingservice.Api;
+package com.example.bookingservice.api;
 
-import com.example.bookingservice.Dto.*;
-import com.example.bookingservice.Model.BusDetails;
-import com.example.bookingservice.Model.Links;
-import com.example.bookingservice.Model.Offers;
-import com.example.bookingservice.Model.UserDetails;
+import com.example.bookingservice.dto.*;
+import com.example.bookingservice.model.BusDetails;
+import com.example.bookingservice.model.Links;
+import com.example.bookingservice.model.Offers;
+import com.example.bookingservice.model.UserDetails;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

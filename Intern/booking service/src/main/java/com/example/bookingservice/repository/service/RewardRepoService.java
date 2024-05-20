@@ -1,7 +1,7 @@
-package com.example.bookingservice.Repository.Service;
+package com.example.bookingservice.repository.service;
 
-import com.example.bookingservice.Model.Reward;
-import com.example.bookingservice.Model.UserDetails;
+import com.example.bookingservice.model.Reward;
+import com.example.bookingservice.model.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

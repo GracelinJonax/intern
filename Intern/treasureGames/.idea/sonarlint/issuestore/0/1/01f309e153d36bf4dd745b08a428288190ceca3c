@@ -1,0 +1,15 @@
+
+
+java:S1104"NMake up a static final constant or non-public and provide accessors if needed.(½ÛŒ¯ÿÿÿÿÿJ$feb34144-2323-4918-b95c-67af2c6749bd
+‘
+java:S1104"PMake down a static final constant or non-public and provide accessors if needed.(½ÛŒ¯ÿÿÿÿÿJ$b34293e1-8222-436d-a522-f9082ae75345
+‘
+java:S1104"PMake left a static final constant or non-public and provide accessors if needed.(½ÛŒ¯ÿÿÿÿÿJ$4777c461-18fd-418b-99c6-808b933a979f
+’
+java:S1104"QMake right a static final constant or non-public and provide accessors if needed.(½ÛŒ¯ÿÿÿÿÿJ$b658eadd-fe9f-465b-b975-9aad48e19b79
+š	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(°€ÒşÿÿÿÿJ$0592ed37-60f5-4020-8647-bb9d2b4ef08a
+½
+java:S1186
+"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(÷—J$12c1234b-8e3c-4fbd-9e43-7bf769760980
+‚
+java:S1659"ADeclare "down" and all following declarations on a separate line.(½ÛŒ¯ÿÿÿÿÿJ$7dc00093-0c7d-4861-97ab-35f8b88efbb7

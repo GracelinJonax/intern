@@ -1,4 +1,4 @@
-package com.example.bookingservice.Model;
+package com.example.bookingservice.model;
 
 import jakarta.persistence.*;
 import lombok.Data;

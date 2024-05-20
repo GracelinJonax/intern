@@ -1,6 +1,6 @@
-package com.example.bookingservice.Dto;
+package com.example.bookingservice.dto;
 
-import com.example.bookingservice.Model.BusDetails;
+import com.example.bookingservice.model.BusDetails;
 import lombok.Data;
 
 import java.util.List;

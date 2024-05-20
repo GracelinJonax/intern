@@ -1,9 +1,9 @@
-package com.example.bookingservice.Repository.Service.Impl;
+package com.example.bookingservice.repository.service.impl;
 
-import com.example.bookingservice.Model.BusDetails;
-import com.example.bookingservice.Model.Journey;
-import com.example.bookingservice.Repository.BusDetailsRepository;
-import com.example.bookingservice.Repository.Service.BusDetailsRepoService;
+import com.example.bookingservice.model.BusDetails;
+import com.example.bookingservice.model.Journey;
+import com.example.bookingservice.repository.BusDetailsRepository;
+import com.example.bookingservice.repository.service.BusDetailsRepoService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,8 +21,4 @@ public class BusDetailsRepoServiceImpl implements BusDetailsRepoService {
         return busDetailsRepository.findByJourneysBoardingPointAndJourneysEndPoint(boardingPoint, endPoint);
     }
 
-    @Override
-    public Journey findByIdAndJourneysBoardingPointAndJourneysEndPoint(String id, String boardingPoint, String endPoint) {
-        return busDetailsRepository.findByIdAndJourneysBoardingPointAndJourneysEndPoint(id, boardingPoint, endPoint);
-    }
 }

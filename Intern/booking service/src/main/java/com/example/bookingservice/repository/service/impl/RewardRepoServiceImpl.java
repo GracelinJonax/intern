@@ -1,9 +1,9 @@
-package com.example.bookingservice.Repository.Service.Impl;
+package com.example.bookingservice.repository.service.impl;
 
-import com.example.bookingservice.Model.Reward;
-import com.example.bookingservice.Model.UserDetails;
-import com.example.bookingservice.Repository.RewardRepository;
-import com.example.bookingservice.Repository.Service.RewardRepoService;
+import com.example.bookingservice.model.Reward;
+import com.example.bookingservice.model.UserDetails;
+import com.example.bookingservice.repository.RewardRepository;
+import com.example.bookingservice.repository.service.RewardRepoService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

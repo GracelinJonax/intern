@@ -1,9 +1,8 @@
-package com.example.bookingservice.Repository;
+package com.example.bookingservice.repository;
 
-import com.example.bookingservice.Model.BookingDetails;
-import com.example.bookingservice.Model.Journey;
+import com.example.bookingservice.model.BookingDetails;
+import com.example.bookingservice.model.Journey;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;

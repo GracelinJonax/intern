@@ -1,0 +1,23 @@
+
+
+java:S1104	"QMake image a static final constant or non-public and provide accessors if needed.(“×ªéJ$3d90b466-2407-45ad-96d3-56f86d724632
+Œ
+java:S1104
+"PMake name a static final constant or non-public and provide accessors if needed.( şÍ¾J$c4993a2f-3bdb-4e6e-8cd2-17d1f20a6cc8
+‘
+java:S1104"UMake collision a static final constant or non-public and provide accessors if needed.(ªò·ÀJ$ab974ad9-31c6-4da7-ac74-048a9f6f3602
+“
+java:S1104"RMake worldX a static final constant or non-public and provide accessors if needed.(ª‡ãìıÿÿÿÿJ$a37424c9-32af-44d6-acad-a2e60b01e596
+“
+java:S1104"RMake worldY a static final constant or non-public and provide accessors if needed.(ª‡ãìıÿÿÿÿJ$d39763ce-7ddb-46df-b76f-a87d74ebfa6e
+–
+java:S1104"UMake solidArea a static final constant or non-public and provide accessors if needed.(Ğé‘øÿÿÿÿJ$1080d619-4aa8-43ce-a8f7-9f1313dc46c4
+‘
+java:S1104"VMake saDefaultX a static final constant or non-public and provide accessors if needed.(Å¸á(J$e79c9ad0-60df-4acc-a8c3-8e5264beb506
+—
+java:S1104"VMake saDefaultY a static final constant or non-public and provide accessors if needed.(ãû©‚øÿÿÿÿJ$8b343ee4-1203-4afb-8694-471d8c6e112c
+•	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(ÃêçªJ$eb1cf894-2256-4cdc-a68b-5e4b53f535c0
+S
+java:S2176"Rename this class.(ÅÕ›±ÿÿÿÿÿJ$00f0447b-adc1-4d02-a75c-a0e4c43eda71
+e
+java:S1659"$Declare "worldY" on a separate line.(ª‡ãìıÿÿÿÿJ$2a1eeb80-ddcb-43f0-8876-fdde3cb3d6d3

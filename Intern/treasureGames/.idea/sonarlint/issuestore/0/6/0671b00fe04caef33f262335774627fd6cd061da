@@ -1,0 +1,32 @@
+
+‡
+java:S1192""FDefine a constant instead of duplicating this literal "right" 4 times.(ç¥‹’ýÿÿÿÿJ$586b2e5d-88e6-49f6-bed7-ee1023be7915
+Ž
+java:S1104"SMake hasKeys a static final constant or non-public and provide accessors if needed.(Ò‚‡YJ$b8051857-3cf1-4e30-bfbf-bc505e724d0c
+š	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(† âöûÿÿÿÿJ$46b4339a-05ce-4470-87b5-0ed4742200b2
+Ž
+java:S3776%"RRefactor this method to reduce its Cognitive Complexity from 18 to the 15 allowed.(Ö×õÄJ$828aa2e9-d3cb-4fdd-8c8c-ec3a09f536eb
+c
+java:S1125&"'Remove the unnecessary boolean literal.(…œÙ†J$dcc113cf-4cab-4611-90d9-10fa2664ceee
+c
+java:S1125&"'Remove the unnecessary boolean literal.(…œÙ†J$fcf37caa-56bd-44e2-acc1-d985b5a4ce15
+c
+java:S1125&"'Remove the unnecessary boolean literal.(…œÙ†J$07811129-61e9-4f39-8f57-3bdc316c1678
+c
+java:S1125&"'Remove the unnecessary boolean literal.(…œÙ†J$28e2761e-b7e8-4f47-80fc-f531d11017c4
+h
+java:S1125'"'Remove the unnecessary boolean literal.(·ÚÜŠøÿÿÿÿJ$ec265b05-bb6b-428f-ad90-907727dbfede
+h
+java:S1125)"'Remove the unnecessary boolean literal.(µýí¥ÿÿÿÿÿJ$7ef1a083-4c28-45a9-97a3-6dfc142f6d20
+b
+java:S1125+"'Remove the unnecessary boolean literal.(ˆ¯…gJ$be27e10b-1970-4525-a5ec-fa9356bc712a
+h
+java:S1125-"'Remove the unnecessary boolean literal.(¨œªåùÿÿÿÿJ$3d688fb2-495b-4bc3-aa0a-58445bbafc2e
+h
+java:S11255"'Remove the unnecessary boolean literal.(ú‹êôøÿÿÿÿJ$d36ba2ff-17aa-422b-ada1-80b7abb8411b
+b	java:S1316""Add a default case to this switch.(ÆóõµýÿÿÿÿJ$c28dd09d-4536-467e-96f3-ea026f434a7b
+b	java:S131T""Add a default case to this switch.(²¯¹µþÿÿÿÿJ$1c43790f-9dce-4ad6-a987-276249eaba50
+Ž
+java:S3776s"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(‡å¿ÔJ$9f51c63f-0bb3-4bae-95ae-568a1e27e145
+w	java:S125t"<This block of commented-out lines of code should be removed.(Òó†J$af57dcb6-59a9-4566-a695-5d1b3a4649ed
+b	java:S131w""Add a default case to this switch.(ÆóõµýÿÿÿÿJ$a6ebcde9-d788-4a96-b5f8-bec83c35d294

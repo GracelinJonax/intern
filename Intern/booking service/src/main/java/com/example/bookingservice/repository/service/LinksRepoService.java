@@ -1,9 +1,7 @@
-package com.example.bookingservice.Repository.Service;
+package com.example.bookingservice.repository.service;
 
-import com.example.bookingservice.Model.Links;
+import com.example.bookingservice.model.Links;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public interface LinksRepoService{

@@ -1,6 +1,6 @@
-package com.example.bookingservice.Dto;
+package com.example.bookingservice.dto;
 
-import com.example.bookingservice.Model.Reward;
+import com.example.bookingservice.model.Reward;
 import lombok.Data;
 
 @Data

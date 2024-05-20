@@ -1,9 +1,9 @@
-package com.example.bookingservice.Repository;
+package com.example.bookingservice.repository;
 
-import com.example.bookingservice.Model.Layout;
+import com.example.bookingservice.model.Layout;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface LayoutRepository extends MongoRepository<Layout,String> {
+public interface LayoutRepository extends MongoRepository<Layout, String> {
 }

@@ -1,6 +1,6 @@
-package com.example.bookingservice.Repository.Service.Impl;
+package com.example.bookingservice.repository.service.impl;
 
-import com.example.bookingservice.Repository.Service.RefundReposService;
+import com.example.bookingservice.repository.service.RefundReposService;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,8 +1,8 @@
-package com.example.bookingservice.Repository.Service.Impl;
+package com.example.bookingservice.repository.service.impl;
 
-import com.example.bookingservice.Model.Payment;
-import com.example.bookingservice.Repository.PaymentRepository;
-import com.example.bookingservice.Repository.Service.PaymentRepoService;
+import com.example.bookingservice.model.Payment;
+import com.example.bookingservice.repository.PaymentRepository;
+import com.example.bookingservice.repository.service.PaymentRepoService;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -14,7 +14,7 @@ public class PaymentRepoServiceImpl implements PaymentRepoService {
     }
 
     @Override
-    public Payment findByPNR(String pnr) {
-        return paymentRepository.findByPNR(pnr);
+    public Payment findByPnr(String pnr) {
+        return paymentRepository.findByPnr(pnr);
     }
 }

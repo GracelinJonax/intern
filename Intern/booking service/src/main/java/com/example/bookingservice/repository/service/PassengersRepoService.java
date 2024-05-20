@@ -1,9 +1,7 @@
-package com.example.bookingservice.Repository.Service;
+package com.example.bookingservice.repository.service;
 
-import com.example.bookingservice.Model.BookingDetails;
-import com.example.bookingservice.Model.Passengers;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import com.example.bookingservice.model.BookingDetails;
+import com.example.bookingservice.model.Passengers;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

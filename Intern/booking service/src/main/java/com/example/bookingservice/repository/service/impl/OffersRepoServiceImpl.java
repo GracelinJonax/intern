@@ -1,8 +1,8 @@
-package com.example.bookingservice.Repository.Service.Impl;
+package com.example.bookingservice.repository.service.impl;
 
-import com.example.bookingservice.Model.Offers;
-import com.example.bookingservice.Repository.OffersRepository;
-import com.example.bookingservice.Repository.Service.OffersRepoService;
+import com.example.bookingservice.model.Offers;
+import com.example.bookingservice.repository.OffersRepository;
+import com.example.bookingservice.repository.service.OffersRepoService;
 import org.springframework.stereotype.Service;
 
 @Service

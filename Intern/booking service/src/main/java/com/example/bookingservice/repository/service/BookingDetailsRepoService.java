@@ -1,7 +1,7 @@
-package com.example.bookingservice.Repository.Service;
+package com.example.bookingservice.repository.service;
 
-import com.example.bookingservice.Model.BookingDetails;
-import com.example.bookingservice.Model.Journey;
+import com.example.bookingservice.model.BookingDetails;
+import com.example.bookingservice.model.Journey;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;

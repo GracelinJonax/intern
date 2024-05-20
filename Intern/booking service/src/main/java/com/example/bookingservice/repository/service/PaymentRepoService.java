@@ -1,12 +1,9 @@
-package com.example.bookingservice.Repository.Service;
+package com.example.bookingservice.repository.service;
 
-import com.example.bookingservice.Model.BookingDetails;
-import com.example.bookingservice.Model.Payment;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import com.example.bookingservice.model.Payment;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface PaymentRepoService {
-    Payment findByPNR(String pnr);
+    Payment findByPnr(String pnr);
 }
